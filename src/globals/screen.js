@@ -66,8 +66,6 @@ export const Tab_Home_Profile = (props) => {
         Authorization: 'Bearer ' + `${token}`,
         'Content-Type': 'application/json',
       },
-
-
     })
     if (res.status === 200) {
       const result = await res.json();
@@ -108,7 +106,7 @@ export const Tab_Home_Profile = (props) => {
           name={ScreenKey.TabNotify}
           component={ScreenNotifyManage}
           options={{
-            tabBarLabel: 'Updates',
+            tabBarLabel: 'Thông báo',
             tabBarColor: '#1f65ff',
             tabBarIcon: ({ color }) => (
               <Icon name="ios-notifications" color={color} size={26} />
