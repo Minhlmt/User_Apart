@@ -9,6 +9,7 @@ import NotifyServiceRepair from './NotifyServices-Repair/ScreenServices-Repair'
 import DetailPublic from './NotifyRepairPublic/DetailPublic'
 import DetailSelf from './NotifySelf-Repair/DetailSelf'
 import DetailServices from './NotifyServices-Repair/DetailServices'
+import RateDone from './NotifyServices-Repair/RateDone'
 const BillStack = createStackNavigator();
 export default function ScreenInfo(props) {
     const {token,userId,apartId}=props.route.params;
@@ -21,6 +22,7 @@ export default function ScreenInfo(props) {
             <BillStack.Screen name={ScreenKey.DetailPublic} component={DetailPublic} options={{ title:'Chi tiết' }} />
             <BillStack.Screen name={ScreenKey.DetailSelf} component={DetailSelf} options={{ title:'Chi tiết' }} />
             <BillStack.Screen name={ScreenKey.DetailServices} component={DetailServices} options={{ title:'Chi tiết' }} />
+            <BillStack.Screen name={ScreenKey.RateDone} component={RateDone} options={{ headerShown:false }} />
         </BillStack.Navigator>
 
 

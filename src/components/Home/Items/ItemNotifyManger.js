@@ -4,73 +4,84 @@ import { ScreenKey } from '../../../globals/constants'
 import { Icon } from 'react-native-elements'
 import { URL, Text_Size } from '../../../globals/constants'
 export default function ItemNotifyManger(props) {
-    const [status,setStatus]=useState();
-    const [styleStatus,setStyleStatus]=useState();
-    useEffect(()=>{
-      
-        if(props.status){
+    const [status, setStatus] = useState();
+    const [styleStatus, setStyleStatus] = useState();
+    const [create_date,setCreate_date]=useState();
+    useEffect(() => {
+
+        if (props.status) {
             setStatus(false);
             setStyleStatus(styles.status_wait);
         }
-        else if(!props.status){
+        else if (!props.status) {
             setStatus(true);
             setStyleStatus(styles.status);
         }
+        console.log("PROPS CREATEDATE ",props.create_date)
+        var date = new Date(props.create_date);
+        setCreate_date(date.getDate() +
+            "/" + (date.getMonth() + 1) +
+            "/" + date.getFullYear() +
+            " " + date.getHours() +
+            ":" + date.getMinutes() + ":" + date.getSeconds());
+    
+
+
+}, [props.status,props.create_date])
+const changeStatusNotify = async () => {
+    console.log("token api ", props.token);
+    console.log("userid", props.userId);
+    console.log("id ", props.id);
+    const res = await fetch(URL + `api/noti/change-is-read`, {
+        method: 'PUT',
+        headers: {
+            Authorization: 'Bearer ' + `${props.token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            notice_id: props.id,
+            user_id: props.userId,
+            status: true,
+        })
+    })
+
+}
+const handleClick = () => {
+    props.updateBadge();
+    changeStatusNotify();
+    setStatus(false);
+    props.navigation.navigate(ScreenKey.NotifyDetailManage, {
+        title: props.title,
+        content: props.content,
+        create_date: create_date,
+        image: props.image,
+        link: props.link,
+        token: props.token,
+        userId: props.userId,
+        notice_id: props.id,
         
-    },[props.status])
-    const changeStatusNotify= async()=>{
-        console.log("token api ",props.token);
-        console.log("userid",props.userId);
-        console.log("id ",props.id);
-        const res = await fetch(URL + `api/noti/change-is-read`, {
-            method: 'PUT',
-            headers: {
-                Authorization: 'Bearer ' + `${props.token}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                notice_id:props.id,
-                user_id:props.userId,
-                status:true
-              })
-        })
-       
-    }
-    const handleClick = () => {
-        props.updateBadge();
-        changeStatusNotify();
-        setStatus(false);
-        props.navigation.navigate(ScreenKey.NotifyDetailManage, {
-            title:props.title,
-            content:props.content,
-            create_date:props.create_date,
-            image:props.image,
-            link:props.link,
-            token:props.token,
-            userId:props.userId,
-            notice_id:props.id
-        })
-    }
-    return (
-        <View style={{flexDirection:'column',justifyContent:'space-between',elevation:2}}>
-        <TouchableOpacity style={ styles.container1 } onPress={handleClick}>
-             <Image style={{ width: 50, height: 50, borderRadius: 400 / 2 }} source={require('../../../../image/bell.png')} />
-           
+    })
+}
+return (
+    <View style={{ flexDirection: 'column', justifyContent: 'space-between', elevation: 2 }}>
+        <TouchableOpacity style={styles.container1} onPress={handleClick}>
+            <Image style={{ width: 50, height: 50, borderRadius: 400 / 2 }} source={require('../../../../image/bell.png')} />
+
             <Text style={styles.text}>{props.title}</Text>
-            <View style={{flexDirection:'row',justifyContent:'flex-end',width:30}}>
-           
-           {status &&(<Icon name='circle'
-                        type='font-awesome'
-                        color='#3498db'
-                        size={20}
-                    />) } 
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', width: 30 }}>
+
+                {status && (<Icon name='circle'
+                    type='font-awesome'
+                    color='#3498db'
+                    size={20}
+                />)}
 
             </View>
-           
-           
+
+
         </TouchableOpacity>
-        </View>
-    )
+    </View>
+)
 }
 const styles = StyleSheet.create({
     container1: {
@@ -103,28 +114,28 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         fontSize: 20
     },
-    status_wait:{
-        fontSize:12,
-        color:'#e74c3c',
+    status_wait: {
+        fontSize: 12,
+        color: '#e74c3c',
         textShadowColor: 'rgba(0, 0, 0, 0.75)',
-        textShadowOffset: {width: -1, height: 1},
+        textShadowOffset: { width: -1, height: 1 },
         textShadowRadius: 0.3,
-        textShadowColor:'#c0392b'
+        textShadowColor: '#c0392b'
     },
-    status:{
-        fontSize:12,
-        color:'#f1c40f',
+    status: {
+        fontSize: 12,
+        color: '#f1c40f',
         textShadowColor: 'rgba(0, 0, 0, 0.75)',
-        textShadowOffset: {width: -1, height: 1},
+        textShadowOffset: { width: -1, height: 1 },
         textShadowRadius: 0.3,
-        textShadowColor:'#f1c40f'
+        textShadowColor: '#f1c40f'
     },
-    status_done:{
-        fontSize:12,
-        color:'#2ecc71',
+    status_done: {
+        fontSize: 12,
+        color: '#2ecc71',
         textShadowColor: 'rgba(0, 0, 0, 0.75)',
-        textShadowOffset: {width: -1, height: 1},
+        textShadowOffset: { width: -1, height: 1 },
         textShadowRadius: 0.3,
-        textShadowColor:'#2ecc71'
+        textShadowColor: '#2ecc71'
     },
 });

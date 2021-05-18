@@ -47,7 +47,8 @@ export const ScreenKey={
     NotifyDetailRepair:'notifyDetailRepair',
     DetailPublic:'detailPublic',
     DetailServices:'detailServices',
-    DetailSelf:'detailSelf'
+    DetailSelf:'detailSelf',
+    RateDone:'rateDone'
 
     
 

@@ -1,29 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground } from 'react-native';
 // import { Cloudinary } from '@cloudinary/base';
-import { URL, Text_Size } from '../.././../../../globals/constants'
+import { URL, Text_Size,ScreenKey } from '../.././../../../globals/constants'
 import { Resize } from '@cloudinary/base/actions/resize';
 import { ScrollView } from 'react-native-gesture-handler';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { Icon } from 'react-native-elements'
 import { SliderBox } from "react-native-image-slider-box";
 export default function DetailServices(props) {
-    const { item, create_date ,token} = props.route.params;
+    const { item, create_date, token } = props.route.params;
     const [title, setTitle] = useState(item.title);
     const [content, setContent] = useState(item.content);
     const [createDate, setCreateDate] = useState(create_date);
-    const [status,setStatus]=useState('');
+    const [status, setStatus] = useState('');
     // const [_image, setImage] = useState('');
     const [spinner, setSpinner] = useState(false);
     const [statusImage, setStatusImage] = useState(true);
     const [_image, setImage] = useState([]);
-   
-
+    const [rate, setRate] = useState();
 
 
     const fetchData = async () => {
 
-      
+
         const res_1 = await fetch(URL + `api/uploadv2/image-url?key=${item.image}`, {
             method: 'GET',
             headers: {
@@ -38,24 +37,36 @@ export default function DetailServices(props) {
         }
     }
     useEffect(() => {
-      
+
         if (item.image === '') {
             setStatusImage(false);
         }
         else {
             fetchData();
         }
-        if(item.status===0){
-            setStatus('Chờ duyệt')
+        if (item.status === 0) {
+            setStatus('Chờ duyệt');
+            setRate(true)
         }
-        if(item.status===1)
+        if (item.status === 1){
             setStatus('Đã duyệt');
-        if(item.status===2)
-            setStatus('Hoàn thành')
+        setRate(true);
+        }
+            
+        if (item.status === 2){
+            setStatus('Hoàn thành');
+            setRate(true);
+        }
+           
 
 
     }, [])
-
+    const handleRate=()=>{
+        props.navigation.navigate(ScreenKey.RateDone,{
+            token,
+            notice_id:item._id
+        })
+    }
     return (
         <ImageBackground style={{ flex: 1, resizeMode: 'cover' }} source={require('../../../../../../image/bgDetail.jpg')}>
             <ScrollView style={styles.container}>
@@ -104,7 +115,7 @@ export default function DetailServices(props) {
 
                     <Text style={styles.text_input}>{createDate}</Text>
                 </View>
-                
+
                 <View style={{ marginTop: 30 }}>
                     {statusImage && (
                         <View style={styles.icon_title}>
@@ -116,11 +127,16 @@ export default function DetailServices(props) {
                             <Text style={styles.text}>Hình ảnh</Text>
                         </View>)}
 
-                        <SliderBox resizeMode='contain' images={_image} />
+                    <SliderBox resizeMode='contain' images={_image} />
                 </View>
                 {/* <Image cloudName="datnqlcc" publicId="datn-qlcc/gookgudncaqq6i28ez1s" width="300" crop="scale"/> */}
 
-
+                {rate &&
+                    (<TouchableOpacity style={styles.appButtonContainer} onPress={handleRate}>
+                        <View style={styles.myButton}>
+                            <Text style={styles.appButtonText}>Đánh giá</Text>
+                        </View>
+                    </TouchableOpacity>)}
 
             </ScrollView>
         </ImageBackground>
@@ -178,5 +194,25 @@ const styles = StyleSheet.create({
     tinyLogo: {
         width: 200,
         height: 200,
+    },
+    appButtonContainer: {
+        elevation: 8,
+        backgroundColor: "#009688",
+        borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 12, marginTop: 10
+    },
+    myButton: {
+        alignItems: 'center',
+        // marginTop:10,
+
+    },
+    appButtonText: {
+        fontSize: 16,
+        color: "#fff",
+        fontWeight: "bold",
+        alignSelf: "center",
+        textTransform: "uppercase",
+
     },
 });
