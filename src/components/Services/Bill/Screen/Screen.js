@@ -9,10 +9,7 @@ import { ScreenKey, notifyBillContext, Tab_Home_ProfileBillContext } from '../..
 const BillStack = createStackNavigator();
 export default function ScreenInfo(props) {
     const _notifyBill = useContext(notifyBillContext).notifyBill;
-    console.log("NOTY ",_notifyBill);
-   
     const [newMessBill, setnewMessBill] = useState(_notifyBill);
-
     useEffect(() => {
         setnewMessBill(_notifyBill);
     }, [props.navigation, _notifyBill])

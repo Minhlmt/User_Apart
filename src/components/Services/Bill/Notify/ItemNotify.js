@@ -6,6 +6,7 @@ var numeral = require('numeral');
  function ItemBill(props) {
      const [createDate,setCreateDate]=useState();
      useEffect(()=>{
+         console.log(props.item);
         var date = new Date(props.item.create_date);
 
         setCreateDate(date.getDate()+
@@ -23,7 +24,7 @@ var numeral = require('numeral');
             <View style={styles.container1}>
                 <View style={{ flexDirection: 'column', justifyContent: 'space-between' }}>
                     <Text style={styles.text}>{props.item.title} </Text>
-                    <Text style={styles.sumPrice}>{props.item.create_date}</Text>
+                    <Text style={styles.sumPrice}>{createDate}</Text>
                 </View>
                 
             </View>

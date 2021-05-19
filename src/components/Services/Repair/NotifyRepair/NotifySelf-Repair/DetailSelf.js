@@ -47,7 +47,7 @@ export default function NotifyDetailRepair(props) {
         if(item.status===0){
             setStatus('Chờ duyệt')
         }
-        if(item.status===1)Ơ
+        if(item.status===1)
             setStatus('Đã duyệt');
     }, [])
 

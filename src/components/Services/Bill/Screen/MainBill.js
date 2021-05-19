@@ -10,7 +10,6 @@ export default function MainBill(props) {
     const [apartId, setApartID] = useState('');
     const [userId, setUserId] = useState();
     const [newMessage,setNewMessage]=useState(notifyBill);
-    console.log("CONTEXT Main ",useContext(Tab_Home_ProfileBillContext));
     const handleChangeNotifyBill= useContext(notifyBillContext).handleChangeNotifyBill;
     const getData = async () => {
         try {

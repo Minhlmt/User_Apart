@@ -52,6 +52,7 @@ export default function Parking(props) {
           'Content-Type': 'application/json',
         },
       })
+      setSpinner(false);
       console.log("STATUS_1", res.status);
       if (res.status === 200) {
         // var body = new FormData();
@@ -148,7 +149,7 @@ export default function Parking(props) {
       return;
     }
     else {
-      // setSpinner(true);
+       setSpinner(true);
       await sendImage();
     }
 

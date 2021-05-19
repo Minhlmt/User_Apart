@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, SectionList, Text, View, Image, TouchableOpacity } from 'react-native';
-import { ScreenKey, URL } from '../../../../globals/constants'
+import { ScreenKey, URL ,notifyBillContext} from '../../../../globals/constants'
 import { Icon } from 'react-native-elements'
 function ItemNotifyParking(props) {
-
+    const changeReload=useContext(notifyBillContext).changeReload;
     const [status, setStatus] = useState();
+    const [create_date,setCreate_date]=useState();
     const changeStatusNotify = async () => {
         const res = await fetch(URL + `api/noti-parking/change-is-read`, {
             method: 'PUT',
@@ -16,10 +17,9 @@ function ItemNotifyParking(props) {
                 notice_id: props.item._id,
             })
         })
-
     }
-
     useEffect(() => {
+        
 
         if (props.item.is_read_user) {
             setStatus(false);
@@ -30,15 +30,23 @@ function ItemNotifyParking(props) {
             setStatus(true);
            
         }
+        var date = new Date(props.item.create_date);
+        setCreate_date(date.getDate() +
+            "/" + (date.getMonth() + 1) +
+            "/" + date.getFullYear() +
+            " " + date.getHours() +
+            ":" + date.getMinutes() + ":" + date.getSeconds());
 
 
     }, [props.status])
     const handleClick = () => {
         setStatus(false);
         changeStatusNotify();
+        changeReload();
         props.navigation.navigate(ScreenKey.DetailNotifyParking, {
             item: props.item,
-            token: props.token
+            token: props.token,
+            create_date
         })
     }
 
@@ -47,7 +55,7 @@ function ItemNotifyParking(props) {
             <TouchableOpacity style={styles.container1} onPress={handleClick}>
                 <View style={{ flexDirection: 'column' }}>
                 <Text style={styles.text}>{props.item.title}</Text>
-                    <Text>{props.item.create_date}</Text>
+                    <Text>{create_date}</Text>
                 </View>
 
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end', width: 30 }}>

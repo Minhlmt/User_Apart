@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { Rating } from 'react-native-elements';
-import { View, StyleSheet, Text, TextInput, Dimensions, TouchableOpacity, ScrollView } from 'react-native'
+import { View, StyleSheet, Text, TextInput, Dimensions, TouchableOpacity, ScrollView, Alert } from 'react-native'
 import {URL} from '../../../../../globals/constants'
 const { width: WIDTH } = Dimensions.get('window')
 export default function Rate(props) {
-    // const {token,notice_id}=props.route.params;
+    const {token,notice_id}=props.route.params;
     
     const [comment, setComment] = useState('');
     const [islike, setIslike] = useState();
@@ -12,21 +12,31 @@ export default function Rate(props) {
     const sendData=async()=>{
         console.log(comment);
         console.log(islike);
+        console.log(notice_id);
         // console.log(token);
         // console.log(notice_id);
-        // const res = await fetch(URL + `api/repair/user/update-evaluation`, {
-        //     method: 'GET',
-        //     headers: {
-        //         Authorization: 'Bearer ' + `${token}`,
-        //         'Content-Type': "application/json",
-        //     },
-        // })
-        // setSpinner(false);
-        // if (res.status === 200) {
-        //     const result = await res.json();
-        //     console.log("RESULT da xac nhan ",result.data)
-        //     setData(result.data);
-        // }
+        const res = await fetch(URL + `api/repair/update-evaluation`, {
+            method: 'PUT',
+            headers: {
+                Authorization: 'Bearer ' + `${token}`,
+                'Content-Type': "application/json",
+            },
+            body:JSON.stringify({
+                notice_id: notice_id,
+                comment: comment,
+                image: "",
+                status_like: islike
+            
+            })
+        })
+        if (res.status === 200) {
+            const result = await res.json();
+            Alert.alert("Đánh giá","Đánh giá dịch vụ thành công");
+            console.log("RESULT đánh giá dịch vụ",result.data)
+        }
+        else{
+            Alert.alert("Thông báo","Server bảo trì. Bạn vui lòng quay lại sau");
+        }
     }
 
 
@@ -38,6 +48,7 @@ export default function Rate(props) {
             setIslike(true)
     }
     const handleRate=()=>{
+        
         sendData();
     }
     return (

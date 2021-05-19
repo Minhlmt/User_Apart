@@ -17,7 +17,7 @@ export default function DetailServices(props) {
     const [spinner, setSpinner] = useState(false);
     const [statusImage, setStatusImage] = useState(true);
     const [_image, setImage] = useState([]);
-    const [rate, setRate] = useState();
+    const [rate, setRate] = useState(false);
 
 
     const fetchData = async () => {
@@ -37,7 +37,7 @@ export default function DetailServices(props) {
         }
     }
     useEffect(() => {
-
+        console.log("da danh gia roi ", item.evaluation.is_evaluate)
         if (item.image === '') {
             setStatusImage(false);
         }
@@ -46,21 +46,22 @@ export default function DetailServices(props) {
         }
         if (item.status === 0) {
             setStatus('Chờ duyệt');
-            setRate(true)
+            setRate(false)
         }
         if (item.status === 1){
             setStatus('Đã duyệt');
-        setRate(true);
+            setRate(false);
         }
             
-        if (item.status === 2){
+        if (item.status === 2 && item.evaluation.is_evaluate===false){
+          
             setStatus('Hoàn thành');
             setRate(true);
         }
            
 
 
-    }, [])
+    }, [item.evaluation.is_evaluate])
     const handleRate=()=>{
         props.navigation.navigate(ScreenKey.RateDone,{
             token,

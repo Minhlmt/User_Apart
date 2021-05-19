@@ -9,6 +9,7 @@ export default function MainParking(props) {
     const [userId, setUserId] = useState();
     const [newMessage, setNewMessage] = useState(true);
     const {countMess}=props.route.params;
+    const [statusMess,setStatusMess]=useState(false);
     const getData = async () => {
         try {
             const _token = await AsyncStorage.getItem('token');
@@ -33,6 +34,9 @@ export default function MainParking(props) {
         }
     }
     useEffect(() => {
+        if(countMess!==0){
+            setStatusMess(true);
+        }
       
 
         getData();
@@ -103,7 +107,7 @@ export default function MainParking(props) {
 
 
                             <View style={styles.badgeIconView}>
-                                <Text style={styles.badge}>{countMess}</Text>
+                                {statusMess &&(<Text style={styles.badge}>{countMess}</Text>)}
                                 <Image style={styles.tinyLogo} resizeMode='contain' source={require('../../../../../image/notifyParking.png')} />
                             </View>
 

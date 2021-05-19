@@ -12,8 +12,9 @@ import { TouchableOpacity } from 'react-native';
 var numeral = require('numeral');
 const window = Dimensions.get('window');
 export default function Home(props) {
-
-  const reload=useContext(notifyBillContext).reloadBadge;
+  const _notifyBill = useContext(notifyBillContext).notifyBill;
+  const [newMessBill, setnewMessBill] = useState(_notifyBill);
+  const reload = useContext(notifyBillContext).reloadBadge;
   const [month, setMonth] = useState();
   const [year, setYear] = useState();
   const [apartId, setApartId] = useState();
@@ -27,13 +28,14 @@ export default function Home(props) {
   const [userId, setUserId] = useState();
   const [countMessParking, setCountMessParking] = useState();
   const [statusMessParking, setStatusMessParking] = useState(false);
+  const [countMessRepair, setCountMessRepair] = useState();
+  const [statusMessRepair, setStatusMessRepair] = useState(false);
   const getData = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
       const apartId = await AsyncStorage.getItem('apartId');
       const infoUser = await AsyncStorage.getItem('infoUser');
       if (token != null) {
-
         const _token = JSON.parse(token);
         const _apartId = JSON.parse(apartId);
         const _infoUser = JSON.parse(infoUser);
@@ -84,6 +86,32 @@ export default function Home(props) {
       }
     }
   }
+  const getcountMessRepair = async () => {
+    const res = await fetch(URL + `api/repair/count-notices/${apartId}?is_read_user=false`, {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + `${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+    if (res.status === 200) {
+      const result = await res.json();
+      setCountMessRepair(result.count);
+      if (result.count === 0) {
+        setStatusMessRepair(false);
+      }
+      else {
+        setStatusMessRepair(true);
+      }
+    }
+    else {
+      setCountMessRepair(0);
+
+    }
+
+
+
+  }
   const getcountMessParking = async () => {
     const res = await fetch(URL + `api/noti-parking/unread/${userId}`, {
       method: 'GET',
@@ -92,7 +120,6 @@ export default function Home(props) {
         'Content-Type': 'application/json',
       },
     })
-
     if (res.status === 200) {
       const result = await res.json();
       setCountMessParking(result.unread);
@@ -135,13 +162,26 @@ export default function Home(props) {
     setMonth(monthtoday);
     setYear(yeartoday);
     getcountMessParking();
+    getcountMessRepair();
     fetchData();
     getData();
   }, [month, year, flag])
   useEffect(() => {
+    console.log("REALO123")
     getcountMessParking();
+    getcountMessRepair();
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      console.log("REALO456",reload);
+      getcountMessParking();
+      getcountMessRepair();
+  });
 
-  }, [reload])
+  return unsubscribe;
+
+  }, [reload,props.navigation])
+  useEffect(() => {
+    setnewMessBill(_notifyBill);
+  }, [_notifyBill])
   const handleUploadImage = () => {
     props.navigation.navigate(ScreenKey.Complain, {
       imageBase64: '',
@@ -158,7 +198,9 @@ export default function Home(props) {
 
   }
   const handleClickRepair = () => {
-    props.navigation.navigate(ScreenKey.Repair)
+    props.navigation.navigate(ScreenKey.Repair,{
+      countMess:countMessRepair
+    })
   }
   const handleClickApartEmpty = () => {
     props.navigation.navigate(ScreenKey.Apart_Empty, {
@@ -194,7 +236,7 @@ export default function Home(props) {
             <View style={styles.shadow_button}>
               <TouchableOpacity style={styles.container} onPress={handleClickBill}>
                 <View style={styles.badgeIconView}>
-                  <Text style={styles.badge}> N </Text>
+                  {newMessBill && (<Text style={styles.badge}> N </Text>)}
                   <Image resizeMode='contain' style={styles.tinyLogo} source={require('../../../image/billHome.png')} />
                   <View>
                     <Text style={styles.text}>Hóa đơn</Text>
@@ -204,9 +246,12 @@ export default function Home(props) {
             </View>
             <View style={styles.shadow_button}>
               <TouchableOpacity style={styles.container} onPress={handleClickRepair}>
-                <Image resizeMode='contain' style={styles.tinyLogo} source={require('../../../image/repairHome.png')} />
-                <View>
-                  <Text style={styles.text}>Sửa chữa</Text>
+                <View style={styles.badgeIconView}>
+                {statusMessRepair && (<Text style={styles.badge}> {countMessRepair} </Text>)}
+                  <Image resizeMode='contain' style={styles.tinyLogo} source={require('../../../image/repairHome.png')} />
+                  <View>
+                    <Text style={styles.text}>Sửa chữa</Text>
+                  </View>
                 </View>
               </TouchableOpacity>
             </View>
@@ -242,7 +287,7 @@ export default function Home(props) {
 
 
 
-            <ItemService id={ScreenKey.NotifyRepair} name='TB sửa chữa' navigation={props.navigation} />
+
             <ItemService id={ScreenKey.Intro} name='Giới thiệu' navigation={props.navigation} />
 
             <ItemService src='' name='jhg' />

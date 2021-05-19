@@ -13,6 +13,7 @@ import RateDone from './NotifyServices-Repair/RateDone'
 const BillStack = createStackNavigator();
 export default function ScreenInfo(props) {
     const {token,userId,apartId}=props.route.params;
+
     return (
         <BillStack.Navigator>
             <BillStack.Screen name={ScreenKey.MainNotifyRepair} component={MainNotify} options={{ headerShown: false }} initialParams={{token,userId,apartId}}/>

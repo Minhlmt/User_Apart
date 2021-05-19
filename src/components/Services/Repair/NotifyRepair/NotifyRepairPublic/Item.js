@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState,useContext } from 'react'
 import { Text, StyleSheet, View, TouchableOpacity } from 'react-native'
 import { Icon } from 'react-native-elements'
-import { ScreenKey } from '../../../../../globals/constants'
+import { ScreenKey,URL,notifyBillContext } from '../../../../../globals/constants'
 function ItemParking(props) {
     const [create_date, setCreate_date] = useState();
+    const changeReload=useContext(notifyBillContext).changeReload;
     useEffect(() => {
         var date = new Date(props.item.create_date);
 
@@ -13,10 +14,29 @@ function ItemParking(props) {
             " " + date.getHours() +
             ":" + date.getMinutes() + ":" + date.getSeconds());
     }, [props.item.create_date])
-
+    const changeIsRead=async()=>{
+        const res = await fetch(URL + `api/repair/user/update-is-read`, {
+            method: 'PUT',
+            headers: {
+                Authorization: 'Bearer ' + `${props.token}`,
+                'Content-Type': "application/json",
+            },
+            body:JSON.stringify({
+                notice_id: props.item._id,
+                user_status: true
+            
+            })
+        })
+      
+        if (res.status === 200) {
+            const result = await res.json();
+          
+        }
+    }
     const handleDetail = () => {
-        console.log(props.item.type);
+     
         if (props.item.type === 0) {
+            changeIsRead();
             props.navigation.navigate(ScreenKey.DetailPublic, {
                 item: props.item,
                 create_date,
@@ -24,6 +44,8 @@ function ItemParking(props) {
             })
         }
         else if (props.item.type === 1) {
+            changeIsRead();
+            changeReload();
             props.navigation.navigate(ScreenKey.DetailSelf, {
                 item: props.item,
                 create_date,
@@ -31,6 +53,8 @@ function ItemParking(props) {
             })
         }
         else {
+            changeIsRead();
+            changeReload();
             props.navigation.navigate(ScreenKey.DetailServices, {
                 item: props.item,
                 create_date,

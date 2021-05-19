@@ -23,6 +23,7 @@ export default function NotifyPublic(props) {
 
         )
     }
+    
     const getdata = async () => {
         const res = await fetch(URL + `api/repair/notices?author=${userId}&type=0`, {
             method: 'GET',
@@ -35,6 +36,7 @@ export default function NotifyPublic(props) {
         console.log(res.status);
         if (res.status === 200) {
             const result = await res.json();
+            console.log("RESULTPUBLIC ",result);
             setData(result.data);
         }
     }
@@ -44,14 +46,17 @@ export default function NotifyPublic(props) {
         getdata();
     }, [])
     const element = (data.length === 0) ? <View style={styles.emptyContainer}><Text style={styles.textEmpty}>Không có dữ liệu</Text></View> :
-        <FlatList
+        <View style={{height:'90%'}}>
+             <FlatList
             data={data}
             keyExtractor={(item, index) => index.toString()}
             ItemSeparatorComponent={ItemSeparatorView}
             renderItem={(item) => ItemView(item)}
         />
+        </View>
+       
     return (
-        <View style={{ height: '90%' }} >
+        <View  >
             <Spinner
                 visible={spinner}
                 textContent={'Loading...'}
@@ -61,9 +66,9 @@ export default function NotifyPublic(props) {
                 <Text style={styles._text_title} >{'Thông báo sữa chữa'}</Text>
 
             </View>
-            <View style={styles.container}>
+            {/* <View style={styles.container}> */}
                 {element}
-            </View>
+            {/* </View> */}
 
         </View>
     )
@@ -110,6 +115,6 @@ const styles = StyleSheet.create({
         fontSize: 20
     },
     emptyContainer: {
-        flexDirection: 'row', justifyContent: 'center', alignItems: 'center'
+        flex:1, justifyContent: 'center', alignItems: 'center'
     }
 })

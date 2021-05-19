@@ -61,8 +61,7 @@ export default function WaterBill({route}) {
             if(result.data!==null){
                 setOldIndex(result.data.old_index);
                 setNewIndex(result.data.new_index);
-                let _unitPrice = numeral(result.data.unit_price.toString()).format('0,0');
-                setUnitPrice(_unitPrice);
+               
                 setSumIndex(result.data.consume);
                 var _sumPrice = numeral(result.data.total_money.toString()).format('0,0');
                 setSumPrice(_sumPrice);
@@ -155,10 +154,7 @@ export default function WaterBill({route}) {
                 <Text style={styles.text}>Tổng tiêu thụ</Text>
                 <Text style={styles.text}>{sumIndex} m3</Text>
             </View>
-            <View style={styles.container}>
-                <Text style={styles.text}>Đơn giá</Text>
-                <Text style={styles.text}>{unitPrice} đ/m3</Text>
-            </View>
+          
             <View style={styles.container}>
                 <Text style={styles.text_sum}>Tổng tiền</Text>
                 <Text style={styles.text_sum}>{sumPrice} đ</Text>

@@ -100,6 +100,7 @@ export default function Repair(props) {
           console.log("STATUS_3", res_2.status);
           setSpinner(false);
           if (res_2.status === 200) {
+          
             Alert.alert('Thông báo', 'Báo cáo thành công',
               [
                 { text: "OK" }
@@ -122,6 +123,7 @@ export default function Repair(props) {
       }
     }
     else {
+      
       const res1 = await fetch(URL + 'api/repair/add', {
         method: 'POST',
         headers: {
@@ -140,7 +142,8 @@ export default function Repair(props) {
       })
       setSpinner(false);
       if (res1.status === 200) {
-
+        const result=await res1.json();
+        console.log("DATA ",result);
         Alert.alert('Thông báo', 'Báo cáo thành công',
           [
             { text: "OK" }
@@ -150,7 +153,8 @@ export default function Repair(props) {
   }
 
   const checkTextInput = async () => {
-    setSpinner(true);
+    console.log("USERID ",userId)
+    console.log("token ",token);
     //Check for the Name TextInput
     if (!topic.trim()) {
       Alert.alert('Thông báo', 'Chủ đề không được trống');
@@ -162,7 +166,7 @@ export default function Repair(props) {
       return;
     }
     else {
-      // setSpinner(true);
+      setSpinner(true);
       await sendImage();
     }
 

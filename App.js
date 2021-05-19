@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import {Alert} from 'react-native'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Welcome from './src/components/Welcome/Welcome'
@@ -7,17 +8,38 @@ import { Tab_Home_Profile } from './src/globals/screen'
 import Apartment from './src/components/Apartment/Apartment'
 import { ScreenKey, URL, notifyBillContext } from './src/globals/constants';
 import SignIn from './src/components/SignIn/SignIn'
-// import messaging from '@react-native-firebase/messaging';
-// import PushNotificationIOS from "@react-native-community/push-notification-ios";
-// import PushNotification from "react-native-push-notification";
-// import Firesase from '@react-native-firebase/app'
-// import { PushNotify } from './src/globals/pushNotification'
+import messaging from '@react-native-firebase/messaging';
 const MainNavigationStack = createStackNavigator();
 
 export default function App({ navigation }) {
+  const [loading, setLoading] = useState(true);
   const [notifyBill, setNotifyBill] = useState();
   const [onRefesh,setOnRefesh]=useState(true);
-  const [reloadBadge,setReloadBadge]=useState(true);
+  const [reloadBadge,setReloadBadge]=useState(false);
+  const changeReload=()=>{
+    setReloadBadge(!reloadBadge);
+  }
+  const getFcmToken = async () => {
+    const fcmToken = await messaging().getToken();
+    if (fcmToken) {
+      // console.log(fcmToken);
+      getData(fcmToken);
+      console.log("Your Firebase Token is:", fcmToken);
+    } else {
+      console.log("Failed", "No token received");
+    }
+  }
+  const requestUserPermission = async () => {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      getFcmToken()
+      // console.log('Authorization status:', authStatus);
+    }
+  }
   const changeOnRefesh=()=>{
     setOnRefesh(!onRefesh);
   }
@@ -82,70 +104,59 @@ export default function App({ navigation }) {
   }
 
   useEffect(() => {
-    // PushNotify();
-
     getStoragenotifyBill();
-    // Firesase.initializeApp();
+    requestUserPermission();
+    messaging().onMessage(async remoteMessage => {
+      console.log('A new FCM message arrived!', remoteMessage);
+      if (remoteMessage.data.type === "1") {
+        storeDataNotifyBill(remoteMessage.data.type);
+        setNotifyBill(true);
+      }
+      else{
+        console.log("RELOAD");
+        console.log(reloadBadge);
+        setReloadBadge(!reloadBadge)
+      }
+    });
+    messaging().setBackgroundMessageHandler(async remoteMessage => {
+      console.log('Message handled in the background!', remoteMessage);
+    });
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      console.log(
+        'Notification caused app to open from background state:',
+        remoteMessage.notification,
+      );
 
-    // PushNotification.configure({
+    });
 
-    //   onRegister: function (token) {
-    //     console.log("TOKEN:", token);
-    //     getData(token.token);
+    // Check whether an initial notification is available
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          console.log(
+            'Notification caused app to open from quit state:',
+            remoteMessage.notification,
+          );
+        }
+        setLoading(false);
+      });
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
 
-    //   },
-
-    //   onNotification: function (notification) {
-    //     console.log("NOTIFICATION:", notification);
-    //     if (notification.data.type === "1") {
-    //       storeDataNotifyBill(notification.data.type);
-    //       setNotifyBill(true);
-    //     }
-    //     else{
-    //       setReloadBadge(!reloadBadge);
-    //     }
-    //     console.log("TILTE ", notification.title);
-    //     console.log("BODY ", notification.body);
-    //     console.log("DATA ", notification.data.type)
-
-    //     // setNotification(notification)
-
-    //     // notification.finish(PushNotificationIOS.FetchResult.NoData);
-    //   },
-
-    //   onAction: function (notification) {
-    //     console.log("ACTION:", notification.action);
-    //     console.log("NOTIFICATION1:", notification);
-
-
-    //   },
-
-
-    //   onRegistrationError: function (err) {
-    //     console.error(err.message, err);
-    //   },
-
-
-    //   permissions: {
-    //     alert: true,
-    //     badge: true,
-    //     sound: true,
-    //   },
-
-
-    //   popInitialNotification: true,
-
-
-    //   requestPermissions: true,
-    // });
+    return unsubscribe;
 
   }, [onRefesh])
 
+  if (loading) {
+    return null;
+  }
 
 
 
   return (
-    <notifyBillContext.Provider value={{ notifyBill, handleChangeNotifyBill,changeOnRefesh,reloadBadge }}>
+    <notifyBillContext.Provider value={{ notifyBill, handleChangeNotifyBill,changeOnRefesh,reloadBadge,changeReload }}>
       <NavigationContainer>
         <MainNavigationStack.Navigator initialRouteName={ScreenKey.Welcome}>
           <MainNavigationStack.Screen name={ScreenKey.Home} component={Tab_Home_Profile} options={{ headerShown: false }} />

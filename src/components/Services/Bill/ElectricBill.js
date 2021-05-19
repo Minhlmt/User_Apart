@@ -61,10 +61,10 @@ export default function ElectricBill({ route }) {
         if (res.status === 200) {
             const result = await res.json();
             if (result.data !== null) {
+                console.log("ELECT ",result.data)
                 setOldIndex(result.data.old_index);
                 setNewIndex(result.data.new_index);
-                let _unitPrice = numeral(result.data.unit_price.toString()).format('0,0');
-                setUnitPrice(_unitPrice);
+              
                 setSumIndex(result.data.consume);
                 var _sumPrice = numeral(result.data.total_money.toString()).format('0,0');
                 setSumPrice(_sumPrice);
@@ -156,10 +156,7 @@ export default function ElectricBill({ route }) {
                 <Text style={styles.text}>Tổng tiêu thụ</Text>
                 <Text style={styles.text}>{sumIndex} KWh</Text>
             </View>
-            <View style={styles.container}>
-                <Text style={styles.text}>Đơn giá</Text>
-                <Text style={styles.text}>{unitPrice} đ/KWh</Text>
-            </View>
+           
             <View style={styles.container}>
                 <Text style={styles.text_sum}>Tổng tiền</Text>
                 <Text style={styles.text_sum}>{sumPrice} đ</Text>

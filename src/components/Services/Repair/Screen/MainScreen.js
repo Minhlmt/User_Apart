@@ -1,16 +1,17 @@
-import React, { useEffect, useState ,useContext} from 'react';
-import { StyleSheet, SectionList, Text, View, Image, TouchableOpacity ,BackHandler} from 'react-native';
+import React, { useEffect, useState, useContext } from 'react';
+import { StyleSheet, SectionList, Text, View, Image, TouchableOpacity, BackHandler } from 'react-native';
 
-import { ScreenKey} from '../../../../globals/constants'
+import { ScreenKey } from '../../../../globals/constants'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function MainScreenRepair(props) {
-  
+    const {countMess}=props.route.params;
     const [token, setToken] = useState('');
     const [apartId, setApartID] = useState('');
     const [userId, setUserId] = useState();
-  
-  
+    const [statusMess,setStatusMess]=useState(false);
+
+
     const getData = async () => {
         try {
             const _token = await AsyncStorage.getItem('token');
@@ -35,17 +36,20 @@ export default function MainScreenRepair(props) {
         }
     }
     useEffect(() => {
+        if(countMess!==0){
+            setStatusMess(true);
+        }
         getData();
     }, [])
     const handleCreateRepair = () => {
         props.navigation.navigate(ScreenKey.CreateRepair);
-      
+
     }
     const handleClickNotify = () => {
-        props.navigation.navigate(ScreenKey.NotifyRepair,{
-            token:token,
-            userId:userId,
-            apartId:apartId
+        props.navigation.navigate(ScreenKey.NotifyRepair, {
+            token: token,
+            userId: userId,
+            apartId: apartId
         })
     }
 
@@ -69,9 +73,10 @@ export default function MainScreenRepair(props) {
                     </View>
                     <View style={styles.shadow_button}>
                         <TouchableOpacity style={styles.container} onPress={handleClickNotify}>
-                            <View style={styles.badgeIconView}>
-                               <Text style={styles.badge}> N </Text>
-                                <Image style={styles.tinyLogo} resizeMode='contain' source={require('../../../../../image/notifyBill.png')} />
+
+                        <View style={styles.badgeIconView}>
+                                {statusMess &&(<Text style={styles.badge}>{countMess}</Text>)}
+                            <Image style={styles.tinyLogo} resizeMode='contain' source={require('../../../../../image/notifyBill.png')} />
                             </View>
                             <View>
                                 <Text style={styles.text}>Thông báo</Text>
@@ -150,18 +155,18 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'rgba(89, 180, 138, 1)'
     },
-    badgeIconView:{
-        position:'relative',
-        padding:5
-      },
-      badge:{
-        color:'#fff',
-        position:'absolute',
-        zIndex:10,
-        top:1,
-        right:1,
-        padding:1,
-        backgroundColor:'red',
-        borderRadius:5
-      }
+    badgeIconView: {
+        position: 'relative',
+        padding: 5
+    },
+    badge: {
+        color: '#fff',
+        position: 'absolute',
+        zIndex: 10,
+        top: 1,
+        right: 1,
+        padding: 1,
+        backgroundColor: 'red',
+        borderRadius: 5
+    }
 })

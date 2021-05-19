@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { createStackNavigator } from '@react-navigation/stack';
-import { ScreenKey, URL} from './constants'
+import { ScreenKey, URL,notifyBillContext} from './constants'
 import Home from '../components/Home/Home'
 import BillScreen from '../components/Services/Bill/Screen/Screen';
 import RepairScreen from '../components/Services/Repair/Screen/Screen';
@@ -38,7 +38,8 @@ export const Stack_Home_Service = () => {
 }
 export const Tab_Home_Profile = (props) => {
 
- 
+  const reload = useContext(notifyBillContext).reloadBadge;
+  console.log("RELOAD TAB ",reload);
   const [count, setCount] = useState(0);
   
   const updateBadge = () => {
@@ -74,15 +75,10 @@ export const Tab_Home_Profile = (props) => {
     }
   }
   useEffect(() => {
-   
+    console.log("RELOAD thong bao chung")
     getData();
-   
-
-  }, [])
+  }, [reload,props.navigation])
   return (
-   
-
-
       <Tab.Navigator
         initialRouteName={ScreenKey.TabHome}
         activeColor="#fff"

@@ -47,7 +47,7 @@ export default function App(props) {
   <FlatList
       data={data}
       keyExtractor={(item, index) => index.toString()}
-      ItemSeparatorComponent={ItemSeparatorView}
+    
       renderItem={(item) => ItemView(item)}
   />
   return (

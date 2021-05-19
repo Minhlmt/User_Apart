@@ -17,7 +17,7 @@ export default function ItemNotifyManger(props) {
             setStatus(true);
             setStyleStatus(styles.status);
         }
-        console.log("PROPS CREATEDATE ",props.create_date)
+    
         var date = new Date(props.create_date);
         setCreate_date(date.getDate() +
             "/" + (date.getMonth() + 1) +
@@ -44,11 +44,13 @@ const changeStatusNotify = async () => {
             status: true,
         })
     })
+    console.log("ISREAD ",res.status);
 
 }
 const handleClick = () => {
-    props.updateBadge();
     changeStatusNotify();
+    props.updateBadge();
+   
     setStatus(false);
     props.navigation.navigate(ScreenKey.NotifyDetailManage, {
         title: props.title,

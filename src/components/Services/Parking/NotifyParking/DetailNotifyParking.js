@@ -19,8 +19,8 @@ import { SliderBox } from "react-native-image-slider-box";
 export default function DetailNotifyParking(props) {
     const [statusImage, setStatusImage] = useState(true);
     const [_image, setImage] = useState([])
-    const { title, content, create_date, image } = props.route.params.item;
-    const { token } = props.route.params
+    const { title, content, image } = props.route.params.item;
+    const { token ,create_date} = props.route.params
 
     const getImage = async () => {
         const res = await fetch(URL + `api/uploadv2/image-url?key=${image}`, {

@@ -71,121 +71,7 @@ export default function App(props) {
         })
         setSpinner(false);
         if (res.status === 200) {
-            //   const result = await res.json();
-            const result = {
-                "data": [
-                    {
-                        "receiver": "606b255ce3d0f52d84fbec45",
-                        "is_delete": false,
-                        "_id": "608e6f0d2ea0d01b702b76b9",
-                        "title": "Thông báo cắt điện nước",
-                        "content": "Căn hộ A315 đã quá thời hạn đóng điện nước. BQL sẽ tiến hành cắt điện nước theo quy định của chung cư.",
-                        "create_date": "5/2/2021, 4:21:17 PM",
-                        "__v": 0
-                    },
-                    {
-                        "receiver": "606b255ce3d0f52d84fbec45",
-                        "is_delete": false,
-                        "_id": "608e69236f9ebd2e9c73d963",
-                        "title": "Thông báo quá hạn đóng tiền điện nước",
-                        "content": "Căn hộ A315 đã quá thời hạn đóng điện nước. Đề nghị chủ căn hộ đóng tiền đầy đủ trước ngày 5/5. Nếu không thực hiện BQL sẽ tiến hành cắt điện nước theo quy định của chung cư.",
-                        "create_date": "5/2/2021, 3:56:02 PM",
-                        "__v": 0
-                    },
-                    {
-                        "receiver": "606b255ce3d0f52d84fbec45",
-                        "is_delete": false,
-                        "_id": "608e69236f9ebd2e9c73d963",
-                        "title": "Thông báo quá hạn đóng tiền điện nước",
-                        "content": "Căn hộ A315 đã quá thời hạn đóng điện nước. Đề nghị chủ căn hộ đóng tiền đầy đủ trước ngày 5/5. Nếu không thực hiện BQL sẽ tiến hành cắt điện nước theo quy định của chung cư.",
-                        "create_date": "5/2/2021, 3:56:02 PM",
-                        "__v": 0
-                    },
-                    {
-                        "receiver": "606b255ce3d0f52d84fbec45",
-                        "is_delete": false,
-                        "_id": "608e69236f9ebd2e9c73d963",
-                        "title": "Thông báo quá hạn đóng tiền điện nước",
-                        "content": "Căn hộ A315 đã quá thời hạn đóng điện nước. Đề nghị chủ căn hộ đóng tiền đầy đủ trước ngày 5/5. Nếu không thực hiện BQL sẽ tiến hành cắt điện nước theo quy định của chung cư.",
-                        "create_date": "5/2/2021, 3:56:02 PM",
-                        "__v": 0
-                    },
-                    {
-                        "receiver": "606b255ce3d0f52d84fbec45",
-                        "is_delete": false,
-                        "_id": "608e69236f9ebd2e9c73d963",
-                        "title": "Thông báo quá hạn đóng tiền điện nước",
-                        "content": "Căn hộ A315 đã quá thời hạn đóng điện nước. Đề nghị chủ căn hộ đóng tiền đầy đủ trước ngày 5/5. Nếu không thực hiện BQL sẽ tiến hành cắt điện nước theo quy định của chung cư.",
-                        "create_date": "5/2/2021, 3:56:02 PM",
-                        "__v": 0
-                    },
-                    {
-                        "receiver": "606b255ce3d0f52d84fbec45",
-                        "is_delete": false,
-                        "_id": "608e69236f9ebd2e9c73d963",
-                        "title": "Thông báo quá hạn đóng tiền điện nước",
-                        "content": "Căn hộ A315 đã quá thời hạn đóng điện nước. Đề nghị chủ căn hộ đóng tiền đầy đủ trước ngày 5/5. Nếu không thực hiện BQL sẽ tiến hành cắt điện nước theo quy định của chung cư.",
-                        "create_date": "5/2/2021, 3:56:02 PM",
-                        "__v": 0
-                    },
-                    {
-                        "receiver": "606b255ce3d0f52d84fbec45",
-                        "is_delete": false,
-                        "_id": "608e69236f9ebd2e9c73d963",
-                        "title": "Thông báo quá hạn đóng tiền điện nước",
-                        "content": "Căn hộ A315 đã quá thời hạn đóng điện nước. Đề nghị chủ căn hộ đóng tiền đầy đủ trước ngày 5/5. Nếu không thực hiện BQL sẽ tiến hành cắt điện nước theo quy định của chung cư.",
-                        "create_date": "5/2/2021, 3:56:02 PM",
-                        "__v": 0
-                    },
-                    {
-                        "receiver": "606b255ce3d0f52d84fbec45",
-                        "is_delete": false,
-                        "_id": "608e69236f9ebd2e9c73d963",
-                        "title": "Thông báo quá hạn đóng tiền điện nước",
-                        "content": "Căn hộ A315 đã quá thời hạn đóng điện nước. Đề nghị chủ căn hộ đóng tiền đầy đủ trước ngày 5/5. Nếu không thực hiện BQL sẽ tiến hành cắt điện nước theo quy định của chung cư.",
-                        "create_date": "5/2/2021, 3:56:02 PM",
-                        "__v": 0
-                    },
-                    {
-                        "receiver": "606b255ce3d0f52d84fbec45",
-                        "is_delete": false,
-                        "_id": "608e69236f9ebd2e9c73d963",
-                        "title": "Thông báo quá hạn đóng tiền điện nước",
-                        "content": "Căn hộ A315 đã quá thời hạn đóng điện nước. Đề nghị chủ căn hộ đóng tiền đầy đủ trước ngày 5/5. Nếu không thực hiện BQL sẽ tiến hành cắt điện nước theo quy định của chung cư.",
-                        "create_date": "5/2/2021, 3:56:02 PM",
-                        "__v": 0
-                    },
-                    {
-                        "receiver": "606b255ce3d0f52d84fbec45",
-                        "is_delete": false,
-                        "_id": "608e69236f9ebd2e9c73d963",
-                        "title": "Thông báo quá hạn đóng tiền điện nước",
-                        "content": "Căn hộ A315 đã quá thời hạn đóng điện nước. Đề nghị chủ căn hộ đóng tiền đầy đủ trước ngày 5/5. Nếu không thực hiện BQL sẽ tiến hành cắt điện nước theo quy định của chung cư.",
-                        "create_date": "5/2/2021, 3:56:02 PM",
-                        "__v": 0
-                    },
-                    {
-                        "receiver": "606b255ce3d0f52d84fbec45",
-                        "is_delete": false,
-                        "_id": "608e69236f9ebd2e9c73d963",
-                        "title": "Thông báo quá hạn đóng tiền điện nước",
-                        "content": "Căn hộ A315 đã quá thời hạn đóng điện nước. Đề nghị chủ căn hộ đóng tiền đầy đủ trước ngày 5/5. Nếu không thực hiện BQL sẽ tiến hành cắt điện nước theo quy định của chung cư.",
-                        "create_date": "5/2/2021, 3:56:02 PM",
-                        "__v": 0
-                    },
-                    {
-                        "receiver": "606b255ce3d0f52d84fbec45",
-                        "is_delete": false,
-                        "_id": "608e69236f9ebd2e9c73d963",
-                        "title": "Thông báo quá hạn đóng tiền điện nước",
-                        "content": "Căn hộ A315 đã quá thời hạn đóng điện nước. Đề nghị chủ căn hộ đóng tiền đầy đủ trước ngày 5/5. Nếu không thực hiện BQL sẽ tiến hành cắt điện nước theo quy định của chung cư.",
-                        "create_date": "5/2/2021, 3:56:02 PM",
-                        "__v": 0
-                    }
-                ]
-
-            }
-
+              const result = await res.json();
             if (result.data.length === 0) {
                 setPage(1);
                 setLoad(true);
@@ -197,6 +83,20 @@ export default function App(props) {
             }
         }
     }
+
+    const element = (data.length === 0) ? <View style={styles.emptyContainer}><Text style={styles.textEmpty}>Không có dữ liệu</Text></View> :
+    <FlatList
+    data={data}
+    keyExtractor={(item, index) => index.toString()}
+    renderItem={renderItem}
+    onEndReached={handleOnEndReached}
+    onEndReachedThreshold={0.1}
+    onScrollBeginDrag={() => {
+
+    }}
+    ListFooterComponent={() => loadingMore && <ListFooterComponent />}
+/>
+
     useEffect(() => {
         setSpinner(true);
         getData();
@@ -224,18 +124,8 @@ export default function App(props) {
                 <Text style={styles._text_title} >Thông báo hóa đơn</Text>
             </View>
 
-
-            <FlatList
-                data={data}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={renderItem}
-                onEndReached={handleOnEndReached}
-                onEndReachedThreshold={0.1}
-                onScrollBeginDrag={() => {
-
-                }}
-                ListFooterComponent={() => loadingMore && <ListFooterComponent />}
-            />
+            {element}
+           
         </ImageBackground>
 
     );
@@ -333,4 +223,14 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         textTransform: 'capitalize',
     },
+    textEmpty: {
+        fontSize: 20
+      },
+      emptyContainer: {
+          flex:1,
+     
+        justifyContent: 'center',
+        alignItems: 'center',
+       
+      }
 });
