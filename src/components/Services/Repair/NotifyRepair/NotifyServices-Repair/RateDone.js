@@ -1,18 +1,21 @@
 import React, { useState } from 'react'
 import { Rating } from 'react-native-elements';
-import { View, StyleSheet, Text, TextInput, Dimensions, TouchableOpacity, ScrollView, Alert } from 'react-native'
-import {URL} from '../../../../../globals/constants'
+import { View, StyleSheet, Text, TextInput, Dimensions, TouchableOpacity, ScrollView, Alert, Image } from 'react-native'
+import { URL } from '../../../../../globals/constants'
 const { width: WIDTH } = Dimensions.get('window')
 export default function Rate(props) {
-    const {token,notice_id}=props.route.params;
-    
-    const [comment, setComment] = useState('');
-    const [islike, setIslike] = useState();
+    const { token, notice_id } = props.route.params;
 
-    const sendData=async()=>{
-        console.log(comment);
-        console.log(islike);
-        console.log(notice_id);
+    const [comment, setComment] = useState('');
+    const [islike, setIslike] = useState(true);
+    const [status,setStatus]=useState();
+    const [imagelike, setImageLike] = useState(require('../../../../../../image/like.png'))
+    const [imageDislike, setImageDislike] = useState(require('../../../../../../image/dislike.png'))
+    
+    const sendData = async () => {
+        // console.log(comment);
+        // console.log(islike);
+        // console.log(notice_id);
         // console.log(token);
         // console.log(notice_id);
         const res = await fetch(URL + `api/repair/update-evaluation`, {
@@ -21,38 +24,50 @@ export default function Rate(props) {
                 Authorization: 'Bearer ' + `${token}`,
                 'Content-Type': "application/json",
             },
-            body:JSON.stringify({
+            body: JSON.stringify({
                 notice_id: notice_id,
                 comment: comment,
                 image: "",
                 status_like: islike
-            
+
             })
         })
         if (res.status === 200) {
             const result = await res.json();
-            Alert.alert("Đánh giá","Đánh giá dịch vụ thành công");
-            console.log("RESULT đánh giá dịch vụ",result.data)
+            Alert.alert("Đánh giá", "Đánh giá dịch vụ thành công");
+            console.log("RESULT đánh giá dịch vụ", result.data)
         }
-        else{
-            Alert.alert("Thông báo","Server bảo trì. Bạn vui lòng quay lại sau");
+        else {
+            Alert.alert("Thông báo", "Server bảo trì. Bạn vui lòng quay lại sau");
         }
     }
 
 
-    const ratingCompleted = (rating) => {
-        // console.log("Rating is: " + rating)
-        if (rating < 3)
-            setIslike(false);
-        else
-            setIslike(true)
-    }
-    const handleRate=()=>{
-        
+
+    // const ratingCompleted = (rating) => {
+    //     // console.log("Rating is: " + rating)
+    //     if (rating < 3)
+    //         setIslike(false);
+    //     else
+    //         setIslike(true)
+    // }
+    const handleRate = () => {
         sendData();
     }
+    const handleLike = () => {
+        setIslike(true);
+        setStatus("Thích");
+        setImageLike(require('../../../../../../image/redlike.png'));
+        setImageDislike(require('../../../../../../image/dislike.png'))
+    }
+    const handleDisLike = () => {
+        setIslike(false);
+        setStatus('Không thích');
+        setImageLike(require('../../../../../../image/like.png'));
+        setImageDislike(require('../../../../../../image/reddislike.png'))
+    }
     return (
-        <ScrollView style={{backgroundColor:'white'}}>
+        <ScrollView style={{ backgroundColor: 'white' }}>
             <View style={styles._title}>
                 <Text style={styles._text_title} >Đánh giá dịch vụ</Text>
             </View>
@@ -60,11 +75,36 @@ export default function Rate(props) {
                 <Text style={styles.intro}>Cám ơn bạn đã sử dụng dịch vụ của chúng tôi! Mời bạn đánh giá chất lượng</Text>
             </View>
 
-            <Rating
+            {/* <Rating
                 showRating
                 onFinishRating={ratingCompleted}
                 style={{ paddingVertical: 10, marginTop: 20 }}
-            />
+            /> */}
+            <View style={{flexDirection:'row',justifyContent:'center', marginTop:10}}>
+                <Text style={{fontSize:20, color:'#16a085'}}>Trạng thái: {status}</Text>
+            </View>
+
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+
+               
+                <TouchableOpacity onPress={handleLike} >
+                    <Image
+                        resizeMode='contain'
+                        style={styles.tinyLogo}
+                        source={imagelike}
+
+                    />
+                    <Text style={{alignSelf:'center',fontSize:18}}>Thích</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleDisLike}>
+                    <Image
+                        resizeMode='contain'
+                        style={styles.tinyLogo}
+                        source={imageDislike}
+                    />
+                    <Text style={{alignSelf:'center',fontSize:18}}>Không thích</Text>
+                </TouchableOpacity>
+            </View>
             <View>
                 <Text style={styles.text2}>Nội dung đánh giá</Text>
 
@@ -155,9 +195,13 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         alignSelf: "center",
         textTransform: "uppercase",
-        paddingVertical:5
+        paddingVertical: 5
 
     },
+    tinyLogo: {
+        width: 100,
+        height: 100
+    }
 
 })
 

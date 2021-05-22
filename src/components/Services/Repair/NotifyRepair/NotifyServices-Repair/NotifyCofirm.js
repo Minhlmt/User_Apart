@@ -35,7 +35,6 @@ export default function App(props) {
     setSpinner(false);
     if (res.status === 200) {
         const result = await res.json();
-        console.log("RESULT da xac nhan ",result.data)
         setData(result.data);
     }
 }

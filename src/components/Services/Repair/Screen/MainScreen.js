@@ -1,15 +1,16 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { StyleSheet, SectionList, Text, View, Image, TouchableOpacity, BackHandler } from 'react-native';
 
-import { ScreenKey } from '../../../../globals/constants'
+import { ScreenKey, URL } from '../../../../globals/constants'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function MainScreenRepair(props) {
-    const {countMess}=props.route.params;
+    // const { countMess } = props.route.params;
     const [token, setToken] = useState('');
     const [apartId, setApartID] = useState('');
     const [userId, setUserId] = useState();
-    const [statusMess,setStatusMess]=useState(false);
+    const [countMess, setCountMess] = useState(0);
+    const [statusCount, setStatusMess] = useState(false);
 
 
     const getData = async () => {
@@ -17,17 +18,15 @@ export default function MainScreenRepair(props) {
             const _token = await AsyncStorage.getItem('token');
             const _apartId = await AsyncStorage.getItem('apartId');
             const _userId = await AsyncStorage.getItem('infoUser');
-            // const _newMessage= await AsyncStorage.getItem('notifyBill');
-            // if(_newMessage!==null){
-            //     setNewMessage(true);
-            // }
+
             if (_token !== null && _apartId !== null) {
                 const _tokenObject = JSON.parse(_token);
                 const _apartIdObject = JSON.parse(_apartId);
                 const _userIdObject = JSON.parse(_userId);
                 setToken(_tokenObject);
                 setApartID(_apartIdObject);
-                setUserId(_userIdObject.id)
+                setUserId(_userIdObject.id);
+                getcountMessRepair(_apartIdObject, _tokenObject);
 
             }
 
@@ -35,12 +34,42 @@ export default function MainScreenRepair(props) {
             // error reading value
         }
     }
-    useEffect(() => {
-        if(countMess!==0){
-            setStatusMess(true);
+    const getcountMessRepair = async (_apartId, _token) => {
+        console.log("apartID ", _apartId);
+        const res = await fetch(URL + `api/repair/count-notices/${_apartId}?is_read_user=false`, {
+            method: 'GET',
+            headers: {
+                Authorization: 'Bearer ' + `${_token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+        if (res.status === 200) {
+            const result = await res.json();
+            setCountMess(result.count);
+            if (result.count === 0) {
+                setStatusMess(false);
+            }
+            else {
+                setStatusMess(true);
+            }
         }
+        else {
+            setCountMess(0);
+
+        }
+
+
+
+    }
+    useEffect(() => {
         getData();
-    }, [])
+        const unsubscribe = props.navigation.addListener('focus', () => {
+            getData();
+        });
+
+        return unsubscribe;
+
+    }, [props.navigation])
     const handleCreateRepair = () => {
         props.navigation.navigate(ScreenKey.CreateRepair);
 
@@ -56,7 +85,7 @@ export default function MainScreenRepair(props) {
     return (
         <View style={{ flex: 1 }}>
             <View style={styles._title}>
-                <Text style={styles._text_title} >Sữa chữa</Text>
+                <Text style={styles._text_title} >Sửa chữa</Text>
             </View>
 
 
@@ -67,16 +96,16 @@ export default function MainScreenRepair(props) {
                         <TouchableOpacity style={styles.container} onPress={handleCreateRepair}>
                             <Image style={styles.tinyLogo} resizeMode='contain' source={require('../../../../../image/bill.png')} />
                             <View>
-                                <Text style={styles.text}>Tạo sữa chữa</Text>
+                                <Text style={styles.text}>Tạo sửa chữa</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.shadow_button}>
                         <TouchableOpacity style={styles.container} onPress={handleClickNotify}>
 
-                        <View style={styles.badgeIconView}>
-                                {statusMess &&(<Text style={styles.badge}>{countMess}</Text>)}
-                            <Image style={styles.tinyLogo} resizeMode='contain' source={require('../../../../../image/notifyBill.png')} />
+                            <View style={styles.badgeIconView}>
+                                {statusCount && (<Text style={styles.badge}>{countMess}</Text>)}
+                                <Image style={styles.tinyLogo} resizeMode='contain' source={require('../../../../../image/notifyBill.png')} />
                             </View>
                             <View>
                                 <Text style={styles.text}>Thông báo</Text>
@@ -165,7 +194,7 @@ const styles = StyleSheet.create({
         zIndex: 10,
         top: 1,
         right: 1,
-        padding: 1,
+        padding: 3,
         backgroundColor: 'red',
         borderRadius: 5
     }

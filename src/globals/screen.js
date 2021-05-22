@@ -39,7 +39,6 @@ export const Stack_Home_Service = () => {
 export const Tab_Home_Profile = (props) => {
 
   const reload = useContext(notifyBillContext).reloadBadge;
-  console.log("RELOAD TAB ",reload);
   const [count, setCount] = useState(0);
   
   const updateBadge = () => {
@@ -47,6 +46,7 @@ export const Tab_Home_Profile = (props) => {
   }
   const getData = async () => {
     try {
+     
       const token = await AsyncStorage.getItem('token');
       const infoUser = await AsyncStorage.getItem('infoUser')
       if (token !== null) {
@@ -61,6 +61,7 @@ export const Tab_Home_Profile = (props) => {
     }
   }
   const fetchData = async (userId, token) => {
+    
     const res = await fetch(URL + `api/noti/unread/${userId}`, {
       method: 'GET',
       headers: {
@@ -71,13 +72,14 @@ export const Tab_Home_Profile = (props) => {
     if (res.status === 200) {
       const result = await res.json();
       if (result.num_unread !== count)
+      console.log("UPDATE TAB CHUNG ",result.num_unread)
         setCount(result.num_unread)
     }
   }
   useEffect(() => {
     console.log("RELOAD thong bao chung")
     getData();
-  }, [reload,props.navigation])
+  }, [reload])
   return (
       <Tab.Navigator
         initialRouteName={ScreenKey.TabHome}

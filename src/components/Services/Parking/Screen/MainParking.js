@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { StyleSheet, SectionList, Text, View, Image, TouchableOpacity, BackHandler } from 'react-native';
-import { ScreenKey, Tab_Home_ProfileBillContext, notifyBillContext } from '../../../../globals/constants'
+import { ScreenKey, Tab_Home_ProfileBillContext, notifyBillContext ,URL} from '../../../../globals/constants'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function MainParking(props) {
@@ -8,8 +8,8 @@ export default function MainParking(props) {
     const [apartId, setApartID] = useState('');
     const [userId, setUserId] = useState();
     const [newMessage, setNewMessage] = useState(true);
-    const {countMess}=props.route.params;
-    const [statusMess,setStatusMess]=useState(false);
+    const [countMessParking, setCountMessParking] = useState();
+    const [statusMessParking, setStatusMessParking] = useState(false);
     const getData = async () => {
         try {
             const _token = await AsyncStorage.getItem('token');
@@ -26,34 +26,66 @@ export default function MainParking(props) {
                 setToken(_tokenObject);
                 setApartID(_apartIdObject);
                 setUserId(_userIdObject.id)
-
+                getcountMessParking(_userIdObject.id,_tokenObject);
             }
 
         } catch (e) {
             // error reading value
         }
     }
+    const getcountMessParking = async (_userId,_token) => {
+        console.log("USERID ",_userId);
+        console.log("token ",token);
+         const res = await fetch(URL + `api/noti-parking/unread/${_userId}`, {
+           method: 'GET',
+           headers: {
+             Authorization: 'Bearer ' + `${_token}`,
+             'Content-Type': 'application/json',
+           },
+         })
+         console.log("READ ",res.status);
+         if (res.status === 200) {
+           const result = await res.json();
+           setCountMessParking(result.unread);
+           if (result.unread === 0) {
+             setStatusMessParking(false);
+           }
+           else {
+             setStatusMessParking(true);
+           }
+     
+     
+         }
+         else {
+           setCountMessParking(0);
+     
+         }
+       }
     useEffect(() => {
-        if(countMess!==0){
-            setStatusMess(true);
-        }
+       
       
 
         getData();
-        const backAction = () => {
-            props.navigation.goBack();
-            return true;
-        };
+        // const backAction = () => {
+        //     props.navigation.goBack();
+        //     return true;
+        // };
 
-        const backHandler = BackHandler.addEventListener(
-            "hardwareBackPress",
-            backAction
-        );
+        // const backHandler = BackHandler.addEventListener(
+        //     "hardwareBackPress",
+        //     backAction
+        // );
 
-        return () => backHandler.remove();
+        // return () => backHandler.remove();
+        const unsubscribe = props.navigation.addListener('focus', () => {
+           getData()
+         });
+       
+         return unsubscribe;
 
 
-    }, [])
+
+    }, [props.navigation])
     const handleClickParking = () => {
 
         props.navigation.navigate(ScreenKey.Parking, {
@@ -107,7 +139,7 @@ export default function MainParking(props) {
 
 
                             <View style={styles.badgeIconView}>
-                                {statusMess &&(<Text style={styles.badge}>{countMess}</Text>)}
+                                {statusMessParking &&(<Text style={styles.badge}>{countMessParking}</Text>)}
                                 <Image style={styles.tinyLogo} resizeMode='contain' source={require('../../../../../image/notifyParking.png')} />
                             </View>
 

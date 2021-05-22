@@ -17,7 +17,7 @@ export default function App({ navigation }) {
   const [onRefesh,setOnRefesh]=useState(true);
   const [reloadBadge,setReloadBadge]=useState(false);
   const changeReload=()=>{
-    setReloadBadge(!reloadBadge);
+    setReloadBadge({...reloadBadge,reloadBadge:!reloadBadge})
   }
   const getFcmToken = async () => {
     const fcmToken = await messaging().getToken();
@@ -115,7 +115,7 @@ export default function App({ navigation }) {
       else{
         console.log("RELOAD");
         console.log(reloadBadge);
-        setReloadBadge(!reloadBadge)
+        setReloadBadge({...reloadBadge,reloadBadge:!reloadBadge})
       }
     });
     messaging().setBackgroundMessageHandler(async remoteMessage => {

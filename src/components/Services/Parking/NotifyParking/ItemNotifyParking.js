@@ -42,7 +42,7 @@ function ItemNotifyParking(props) {
     const handleClick = () => {
         setStatus(false);
         changeStatusNotify();
-        changeReload();
+        // changeReload();
         props.navigation.navigate(ScreenKey.DetailNotifyParking, {
             item: props.item,
             token: props.token,

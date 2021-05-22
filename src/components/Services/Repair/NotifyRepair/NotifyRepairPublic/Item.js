@@ -1,10 +1,12 @@
-import React, { useEffect, useState,useContext } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Text, StyleSheet, View, TouchableOpacity } from 'react-native'
 import { Icon } from 'react-native-elements'
-import { ScreenKey,URL,notifyBillContext } from '../../../../../globals/constants'
+import { ScreenKey, URL, notifyBillContext } from '../../../../../globals/constants'
 function ItemParking(props) {
     const [create_date, setCreate_date] = useState();
-    const changeReload=useContext(notifyBillContext).changeReload;
+    const [rate, setRate] = useState('');
+    const [isreaduser, setIsReadUser] = useState();
+    const changeReload = useContext(notifyBillContext).changeReload;
     useEffect(() => {
         var date = new Date(props.item.create_date);
 
@@ -13,30 +15,44 @@ function ItemParking(props) {
             "/" + date.getFullYear() +
             " " + date.getHours() +
             ":" + date.getMinutes() + ":" + date.getSeconds());
+
+
+        if (props.item.is_read_user)
+            setIsReadUser(false);
+        else
+            setIsReadUser(true);
+        if (props.item.type===2 && props.item.status===2&& !props.item.evaluation.is_evaluate) {
+        
+            setRate('chưa đánh giá')
+        }
+        else{
+            setRate('');
+        }
+
+
     }, [props.item.create_date])
-    const changeIsRead=async()=>{
+    const changeIsRead = async () => {
         const res = await fetch(URL + `api/repair/user/update-is-read`, {
             method: 'PUT',
             headers: {
                 Authorization: 'Bearer ' + `${props.token}`,
                 'Content-Type': "application/json",
             },
-            body:JSON.stringify({
+            body: JSON.stringify({
                 notice_id: props.item._id,
                 user_status: true
-            
+
             })
         })
-      
+
         if (res.status === 200) {
             const result = await res.json();
-          
+
         }
     }
     const handleDetail = () => {
-     
+
         if (props.item.type === 0) {
-            changeIsRead();
             props.navigation.navigate(ScreenKey.DetailPublic, {
                 item: props.item,
                 create_date,
@@ -44,8 +60,12 @@ function ItemParking(props) {
             })
         }
         else if (props.item.type === 1) {
-            changeIsRead();
-            changeReload();
+            if(props.item.status===1){
+                changeIsRead();
+                // changeReload();
+                setIsReadUser(false);
+            }
+           
             props.navigation.navigate(ScreenKey.DetailSelf, {
                 item: props.item,
                 create_date,
@@ -53,8 +73,12 @@ function ItemParking(props) {
             })
         }
         else {
-            changeIsRead();
-            changeReload();
+            if(props.item.status===1 || props.item.status===2 || props.item.status===3){
+                changeIsRead();
+                // changeReload();
+                setIsReadUser(false);
+            }
+         
             props.navigation.navigate(ScreenKey.DetailServices, {
                 item: props.item,
                 create_date,
@@ -71,13 +95,21 @@ function ItemParking(props) {
                     <Text style={styles.sumPrice}>{create_date} </Text>
 
                 </View>
-                <View style={{ flexDirection: 'column' }}>
-                    <Icon name='arrow-forward-ios'
-                        type='material'
-                        color='#3498db'
-                        size={20}
-                        style={{ alignItems: 'flex-end' }}
-                    />
+                <View style={{ flexDirection: 'row' }}>
+                    <Text style={{width:50, color:'#c0392b',fontWeight:'bold'}}>{rate}</Text>
+                    <View style={{ flexDirection: 'column' }}>
+                        <Icon name='arrow-forward-ios'
+                            type='material'
+                            color='#3498db'
+                            size={20}
+                            style={{ alignItems: 'flex-end' }}
+                        />
+                        {isreaduser && (<Icon name='circle'
+                            type='font-awesome'
+                            color='#2980b9'
+                            size={20}
+                        />)}
+                    </View>
                 </View>
 
 

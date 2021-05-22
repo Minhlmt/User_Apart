@@ -43,6 +43,9 @@ export default function Home(props) {
         setApartId(_apartId);
         setToken(_token);
         setFlag(false);
+        getcountMessParking(_infoUser.id,_token);
+        getcountMessRepair(_apartId,_token);
+        
       }
     } catch (e) {
       // error reading value
@@ -86,11 +89,12 @@ export default function Home(props) {
       }
     }
   }
-  const getcountMessRepair = async () => {
-    const res = await fetch(URL + `api/repair/count-notices/${apartId}?is_read_user=false`, {
+  const getcountMessRepair = async (_apartId,_token) => {
+    console.log("apartID ",_apartId);
+    const res = await fetch(URL + `api/repair/count-notices/${_apartId}?is_read_user=false`, {
       method: 'GET',
       headers: {
-        Authorization: 'Bearer ' + `${token}`,
+        Authorization: 'Bearer ' + `${_token}`,
         'Content-Type': 'application/json',
       },
     })
@@ -112,14 +116,17 @@ export default function Home(props) {
 
 
   }
-  const getcountMessParking = async () => {
-    const res = await fetch(URL + `api/noti-parking/unread/${userId}`, {
+  const getcountMessParking = async (_userId,_token) => {
+   console.log("USERID ",_userId);
+   console.log("token ",token);
+    const res = await fetch(URL + `api/noti-parking/unread/${_userId}`, {
       method: 'GET',
       headers: {
-        Authorization: 'Bearer ' + `${token}`,
+        Authorization: 'Bearer ' + `${_token}`,
         'Content-Type': 'application/json',
       },
     })
+    console.log("READ ",res.status);
     if (res.status === 200) {
       const result = await res.json();
       setCountMessParking(result.unread);
@@ -161,19 +168,15 @@ export default function Home(props) {
     }
     setMonth(monthtoday);
     setYear(yeartoday);
-    getcountMessParking();
-    getcountMessRepair();
     fetchData();
     getData();
   }, [month, year, flag])
   useEffect(() => {
     console.log("REALO123")
-    getcountMessParking();
-    getcountMessRepair();
+    getcountMessParking(userId,token);
+    getcountMessRepair(apartId,token);
     const unsubscribe = props.navigation.addListener('focus', () => {
-      console.log("REALO456",reload);
-      getcountMessParking();
-      getcountMessRepair();
+     getData();
   });
 
   return unsubscribe;

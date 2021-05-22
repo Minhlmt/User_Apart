@@ -6,6 +6,7 @@ import { ScreenKey } from '../../../globals/constants'
 import NotifyWaitComfirm from './NotifyWaitConfirm'
 import NotifyCofirm from './NotifyCofirm'
 import NotifyDone from './NotifyDone'
+import NotifyNotConfirm from './NotifyNotConfirm'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 const Tab = createMaterialTopTabNavigator();
@@ -23,7 +24,7 @@ export default function TabRepair ({route}){
            <Tab.Screen name="WaitComfirm" component={NotifyWaitComfirm} options={{tabBarLabel:'Chờ xác nhận'}}  initialParams={{token,userId,apartId}}/>
            <Tab.Screen name="Comfirm" component={NotifyCofirm} options={{tabBarLabel:'Đã xác nhận'}}  initialParams={{token,userId,apartId}}/>
            <Tab.Screen name="Done" component={NotifyDone} options={{tabBarLabel:'Hoàn thành'}}  initialParams={{token,userId,apartId}}/>
-          
+           <Tab.Screen name="NotConfirm" component={NotifyNotConfirm} options={{tabBarLabel:'Không duyệt'}}  initialParams={{token,userId,apartId}}/>
           
        </Tab.Navigator>
     )
