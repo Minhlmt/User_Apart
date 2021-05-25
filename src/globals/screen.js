@@ -17,6 +17,7 @@ import Complain from '../components/Complain/Complain'
 import Screen_Apart_Empty from '../components/Services/Apart_Empty/Screen'
 import Parking from '../components/Services/Parking/Screen/Screen'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import RegisterFestival from '../components/Services/PublicPlace/Screen/Screen'
 
 const ServiceNavigationStack = createStackNavigator();
 // const Tab = createBottomTabNavigator();
@@ -33,6 +34,7 @@ export const Stack_Home_Service = () => {
       <ServiceNavigationStack.Screen name={ScreenKey.Complain} component={Complain} options={{ headerShown: false }} />
       <ServiceNavigationStack.Screen name={ScreenKey.Apart_Empty} component={Screen_Apart_Empty} options={{ headerShown: false }} />
       <ServiceNavigationStack.Screen name={ScreenKey.MainParking} component={Parking} options={{ headerShown: false }} />
+      <ServiceNavigationStack.Screen name={ScreenKey.MainRegister} component={RegisterFestival} options={{ headerShown: false }} />
     </ServiceNavigationStack.Navigator>
   )
 }
@@ -72,12 +74,12 @@ export const Tab_Home_Profile = (props) => {
     if (res.status === 200) {
       const result = await res.json();
       if (result.num_unread !== count)
-      console.log("UPDATE TAB CHUNG ",result.num_unread)
+   
         setCount(result.num_unread)
     }
   }
   useEffect(() => {
-    console.log("RELOAD thong bao chung")
+  
     getData();
   }, [reload])
   return (

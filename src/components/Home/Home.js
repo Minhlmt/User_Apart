@@ -30,6 +30,8 @@ export default function Home(props) {
   const [statusMessParking, setStatusMessParking] = useState(false);
   const [countMessRepair, setCountMessRepair] = useState();
   const [statusMessRepair, setStatusMessRepair] = useState(false);
+  const [countMessFes, setCountMessFes] = useState();
+  const [statusMessFes, setStatusMessFes] = useState(false);
   const getData = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
@@ -43,16 +45,17 @@ export default function Home(props) {
         setApartId(_apartId);
         setToken(_token);
         setFlag(false);
-        getcountMessParking(_infoUser.id,_token);
-        getcountMessRepair(_apartId,_token);
-        
+        getcountMessParking(_infoUser.id, _token);
+        getcountMessRepair(_apartId, _token);
+        getcountFestival(_infoUser.id, _token);
+
       }
     } catch (e) {
       // error reading value
     }
   }
   const fetchData1 = async () => {
-    console.log("APARTID ", apartId);
+
     const res = await fetch(URL + `api/all-bill/bill/${apartId}/${month}/${year}`, {
       method: 'GET',
       headers: {
@@ -60,10 +63,10 @@ export default function Home(props) {
         'Content-Type': 'application/json',
       },
     })
-    console.log("STATUS ", res.status);
+
     if (res.status === 200) {
       const result = await res.json();
-      console.log("RESULT ", result);
+
       if (result.data.length === 0) {
 
         setSumMoney(0);
@@ -89,8 +92,8 @@ export default function Home(props) {
       }
     }
   }
-  const getcountMessRepair = async (_apartId,_token) => {
-    console.log("apartID ",_apartId);
+  const getcountMessRepair = async (_apartId, _token) => {
+
     const res = await fetch(URL + `api/repair/count-notices/${_apartId}?is_read_user=false`, {
       method: 'GET',
       headers: {
@@ -116,9 +119,8 @@ export default function Home(props) {
 
 
   }
-  const getcountMessParking = async (_userId,_token) => {
-   console.log("USERID ",_userId);
-   console.log("token ",token);
+  const getcountMessParking = async (_userId, _token) => {
+
     const res = await fetch(URL + `api/noti-parking/unread/${_userId}`, {
       method: 'GET',
       headers: {
@@ -126,7 +128,7 @@ export default function Home(props) {
         'Content-Type': 'application/json',
       },
     })
-    console.log("READ ",res.status);
+
     if (res.status === 200) {
       const result = await res.json();
       setCountMessParking(result.unread);
@@ -144,6 +146,33 @@ export default function Home(props) {
 
     }
   }
+  const getcountFestival = async (_userId, _token) => {
+    const res = await fetch(URL + `api/register-service/all-register?user_id=${_userId}&is_read_user=false`, {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + `${_token}`,
+        'Content-Type': "application/json",
+      },
+    })
+    console.log("STATUS FES ",res.status);
+    if (res.status === 200) {
+      const result = await res.json();
+      console.log("STAT ",result.data.length);
+      setCountMessFes(result.data.length);
+      
+      if (result.data.length === 0) {
+        setStatusMessFes(false);
+      }
+      else {
+        setStatusMessFes(true);
+      }
+
+    }
+    else {
+      setCountMessFes(0);
+
+    }
+  }
   const fetchData = async () => {
     await getData();
     await fetchData1()
@@ -152,6 +181,8 @@ export default function Home(props) {
   useEffect(() => {
 
     var today = new Date("2021-08-11");
+
+
     let date = CalDate(today);
     let monthtoday, yeartoday;
     let preMonth = (date.mm - 1).toString();
@@ -172,16 +203,18 @@ export default function Home(props) {
     getData();
   }, [month, year, flag])
   useEffect(() => {
-    console.log("REALO123")
-    getcountMessParking(userId,token);
-    getcountMessRepair(apartId,token);
+
+
+    getcountMessParking(userId, token);
+    getcountMessRepair(apartId, token);
+    getcountFestival(userId, token)
     const unsubscribe = props.navigation.addListener('focus', () => {
-     getData();
-  });
+      getData();
+    });
 
-  return unsubscribe;
+    return unsubscribe;
 
-  }, [reload,props.navigation])
+  }, [reload, props.navigation])
   useEffect(() => {
     setnewMessBill(_notifyBill);
   }, [_notifyBill])
@@ -201,8 +234,8 @@ export default function Home(props) {
 
   }
   const handleClickRepair = () => {
-    props.navigation.navigate(ScreenKey.Repair,{
-      countMess:countMessRepair
+    props.navigation.navigate(ScreenKey.Repair, {
+      countMess: countMessRepair
     })
   }
   const handleClickApartEmpty = () => {
@@ -215,6 +248,10 @@ export default function Home(props) {
       countMess: countMessParking
     })
   }
+  const handleClickRegister = () => {
+    props.navigation.navigate(ScreenKey.MainRegister)
+  }
+
   return (
     // <Tab_Home_ProfileBillContext.Provider value={newMessBill}>
     <ScrollView style={{ flex: 1 }}>
@@ -250,7 +287,7 @@ export default function Home(props) {
             <View style={styles.shadow_button}>
               <TouchableOpacity style={styles.container} onPress={handleClickRepair}>
                 <View style={styles.badgeIconView}>
-                {statusMessRepair && (<Text style={styles.badge}> {countMessRepair} </Text>)}
+                  {statusMessRepair && (<Text style={styles.badge}> {countMessRepair} </Text>)}
                   <Image resizeMode='contain' style={styles.tinyLogo} source={require('../../../image/repairHome.png')} />
                   <View>
                     <Text style={styles.text}>Sửa chữa</Text>
@@ -286,12 +323,23 @@ export default function Home(props) {
               </TouchableOpacity>
             </View>
 
+            <View style={styles.shadow_button}>
+              <TouchableOpacity style={styles.container} onPress={handleClickRegister}>
+                <View style={styles.badgeIconView}>
+                  {statusMessFes && (<Text style={styles.badge}> {countMessFes} </Text>)}
+                  <Image resizeMode='contain' style={styles.tinyLogo} source={require('../../../image/festival.png')} />
+                  <View>
+                    <Text style={styles.text}>Dịch vụ</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
 
 
 
 
 
-            <ItemService id={ScreenKey.Intro} name='Giới thiệu' navigation={props.navigation} />
+
 
             <ItemService src='' name='jhg' />
           </View>

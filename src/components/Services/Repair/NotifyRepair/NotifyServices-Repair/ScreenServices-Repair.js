@@ -14,15 +14,15 @@ const Stack=createStackNavigator();
 export default function TabRepair ({route}){
   const {token,userId,apartId}=route.params
     return(
-        <Tab.Navigator initialRouteName='WaitComfirm'  
+        <Tab.Navigator initialRouteName='WaitConfirm'  
         tabBarOptions={{
            activeTintColor: '#e91e63',
            labelStyle: { fontSize: 14 ,  fontWeight: "bold",},
            style: { backgroundColor: 'powderblue' },
            
          }}>
-           <Tab.Screen name="WaitComfirm" component={NotifyWaitComfirm} options={{tabBarLabel:'Chờ xác nhận'}}  initialParams={{token,userId,apartId}}/>
-           <Tab.Screen name="Comfirm" component={NotifyCofirm} options={{tabBarLabel:'Đã xác nhận'}}  initialParams={{token,userId,apartId}}/>
+           <Tab.Screen name="WaitConfirm" component={NotifyWaitComfirm} options={{tabBarLabel:'Chờ xác nhận'}}  initialParams={{token,userId,apartId}}/>
+           <Tab.Screen name="Confirm" component={NotifyCofirm} options={{tabBarLabel:'Đã xác nhận'}}  initialParams={{token,userId,apartId}}/>
            <Tab.Screen name="Done" component={NotifyDone} options={{tabBarLabel:'Hoàn thành'}}  initialParams={{token,userId,apartId}}/>
            <Tab.Screen name="NotConfirm" component={NotifyNotConfirm} options={{tabBarLabel:'Không duyệt'}}  initialParams={{token,userId,apartId}}/>
           

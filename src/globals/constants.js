@@ -48,7 +48,14 @@ export const ScreenKey={
     DetailPublic:'detailPublic',
     DetailServices:'detailServices',
     DetailSelf:'detailSelf',
-    RateDone:'rateDone'
+    RateDone:'rateDone',
+
+
+    Register:'register',
+    MainRegister:'mainRegister',
+    CreateRegister:'createRegister',
+    NotifyRegister:'notifyRegister',
+    DetailRegister:'detailRegister'
 
     
 

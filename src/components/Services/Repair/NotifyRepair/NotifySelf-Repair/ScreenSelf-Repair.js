@@ -5,6 +5,7 @@ import { ScreenKey } from '../../../globals/constants'
 
 import NotifyWaitComfirm from './NotifyWaitConfirm'
 import NotifyCofirm from './NotifyCofirm'
+import NotifyNotConfirm from './NotifyNotConfirm'
 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
@@ -14,15 +15,15 @@ export default function TabRepair ({route}){
   const {token,userId,apartId}=route.params
 
     return(
-        <Tab.Navigator initialRouteName='WaitComfirm'  
+        <Tab.Navigator initialRouteName='WaitConfirm'  
         tabBarOptions={{
            activeTintColor: '#e91e63',
            labelStyle: { fontSize: 14 ,  fontWeight: "bold",},
            style: { backgroundColor: 'powderblue' },
          }}>
-           <Tab.Screen name="WaitComfirm" component={NotifyWaitComfirm} options={{tabBarLabel:'Chờ duyệt'}} initialParams={{token,userId,apartId}} />
-           <Tab.Screen name="Comfirm" component={NotifyCofirm} options={{tabBarLabel:'Đã duyệt'}} initialParams={{token,userId,apartId}}/>
-         
+           <Tab.Screen name="WaitConfirm" component={NotifyWaitComfirm} options={{tabBarLabel:'Chờ duyệt'}} initialParams={{token,userId,apartId}} />
+           <Tab.Screen name="Confirm" component={NotifyCofirm} options={{tabBarLabel:'Đã duyệt'}} initialParams={{token,userId,apartId}}/>
+           <Tab.Screen name="NotConfirm" component={NotifyNotConfirm} options={{tabBarLabel:'Không duyệt'}} initialParams={{token,userId,apartId}}/>
        </Tab.Navigator>
     )
 }

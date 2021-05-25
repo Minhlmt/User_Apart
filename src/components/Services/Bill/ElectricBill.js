@@ -27,7 +27,6 @@ export default function ElectricBill({ route }) {
     const onValueChange = useCallback(
         (event, newDate) => {
             const selectedDate = newDate || date;
-
             showPicker(false);
             setDate(selectedDate);
             let mydate = CalDate(selectedDate);
