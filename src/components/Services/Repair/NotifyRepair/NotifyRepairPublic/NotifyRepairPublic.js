@@ -2,7 +2,7 @@
 import React, { Component, useEffect, useState, useCallback, useContext } from 'react';
 
 
-import { Text, StyleSheet, View, TextInput, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, View, TextInput, ActivityIndicator, Alert, TouchableOpacity,ImageBackground } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import Item from './Item'
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -56,7 +56,7 @@ export default function NotifyPublic(props) {
         </View>
        
     return (
-        <View  >
+        <ImageBackground style={{ flex: 1, resizeMode: 'cover' }} source={require('../../../../../../image/repairNotify3.jpg')}>
             <Spinner
                 visible={spinner}
                 textContent={'Loading...'}
@@ -70,7 +70,7 @@ export default function NotifyPublic(props) {
                 {element}
             {/* </View> */}
 
-        </View>
+        </ImageBackground>
     )
 }
 const styles = StyleSheet.create({

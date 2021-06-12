@@ -18,6 +18,7 @@ export default function Parking(props) {
   const [nameExtension, setNameExtension] = useState();
   const [extension, setExtension] = useState();
   const [spinner, setSpinner] = useState(false);
+  const [tokenDevice,setTokenDevice]=useState();
   const { imageBase64, uri, width, height, mime, path } = props.route.params;
   const getData = async () => {
     try {
@@ -32,12 +33,45 @@ export default function Parking(props) {
         // console.log(userId+" "+token+" "+apartId);
         setUserId(_userIdObject.id);
         setToken(_tokenObject);
-
+        getTokenDevicesAdmin(_tokenObject);
 
       }
 
     } catch (e) {
       // error reading value
+    }
+  }
+  const pushNotifyAdmin=async()=>{
+    console.log("token device ",tokenDevice);
+    const res = await fetch(URL + `api/push-noti/add-notice`, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + `${token}`,
+        'Content-Type': 'application/json',
+      },
+      body:JSON.stringify({
+        tokens:tokenDevice,
+        title:'Khiếu nại bãi xe',
+        body:'Có thông báo mới',
+        type:2
+      })
+    })
+    console.log("SATUS ",res.status);
+  }
+  const getTokenDevicesAdmin=async(_token)=>{
+    const res = await fetch(URL + `api/admin/token-device?role=0`, {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + `${_token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+  
+   
+    if(res.status===200){
+      const result =await res.json();
+      console.log("devices ",result);
+      setTokenDevice(result.data);
     }
   }
   const sendImage = async () => {
@@ -149,7 +183,8 @@ export default function Parking(props) {
       return;
     }
     else {
-       setSpinner(true);
+      setSpinner(true);
+      pushNotifyAdmin();
       await sendImage();
     }
 
@@ -316,11 +351,13 @@ const styles = StyleSheet.create({
   },
 
   appButtonContainer: {
-    elevation: 8,
+    elevation: 10,
     backgroundColor: "#009688",
-    borderRadius: 10,
+    borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 12, marginTop: 10,
+    marginBottom: 15,
+    marginHorizontal: 10
 
   },
 

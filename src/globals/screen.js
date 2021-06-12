@@ -18,7 +18,7 @@ import Screen_Apart_Empty from '../components/Services/Apart_Empty/Screen'
 import Parking from '../components/Services/Parking/Screen/Screen'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RegisterFestival from '../components/Services/PublicPlace/Screen/Screen'
-
+import Post from '../components/Services/Post/Screen/Screen'
 const ServiceNavigationStack = createStackNavigator();
 // const Tab = createBottomTabNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -35,6 +35,7 @@ export const Stack_Home_Service = () => {
       <ServiceNavigationStack.Screen name={ScreenKey.Apart_Empty} component={Screen_Apart_Empty} options={{ headerShown: false }} />
       <ServiceNavigationStack.Screen name={ScreenKey.MainParking} component={Parking} options={{ headerShown: false }} />
       <ServiceNavigationStack.Screen name={ScreenKey.MainRegister} component={RegisterFestival} options={{ headerShown: false }} />
+      <ServiceNavigationStack.Screen name={ScreenKey.Post} component={Post} options={{ headerShown: false }} />
     </ServiceNavigationStack.Navigator>
   )
 }

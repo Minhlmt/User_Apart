@@ -1,19 +1,19 @@
-import React, { useState, useEffect ,useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { ImageBackground, StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { URL,notifyBillContext } from '../../globals/constants'
+import { URL, notifyBillContext } from '../../globals/constants'
 import { ScreenKey } from '../../globals/constants'
 import bgImage from '../../../image/login.jpg'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { Dimensions } from 'react-native';
 const { width: WIDTH } = Dimensions.get('window')
 export default function App(props) {
-    const changeOnRefesh=useContext(notifyBillContext).changeOnRefesh;
+    const changeOnRefesh = useContext(notifyBillContext).changeOnRefesh;
     const [showPass, setShowPass] = useState(true);
-    const [username, setUsername] = useState();
+    const [username, setUsername] = useState('');
     const [pass, setPass] = useState();
-    const [spinner,setSpinner]=useState(false)
+    const [spinner, setSpinner] = useState(false)
     const senddata = async () => {
         const res = await fetch(URL + 'api/auth/login', {
             method: 'POST',
@@ -25,13 +25,12 @@ export default function App(props) {
                 password: pass
             }),
         })
-        
-       
-   
         if (res.status === 200) {
             const result = await res.json();
             setSpinner(false);
-            storeData(result.token, result.infoUser);
+            console.log("AVT ",result);
+
+            storeData(result.token, result.infoUser,result.infoUser.avatar);
             changeOnRefesh();
             props.navigation.navigate(ScreenKey.ChooseApart, { token: result.token, userId: result.infoUser.id });
         } else {
@@ -40,12 +39,15 @@ export default function App(props) {
         }
 
     }
-    const storeData = async (token, infoUser) => {
+    const storeData = async (token, infoUser,avt) => {
         try {
+            console.log("AVATAR ",avt);
             const jsonToken = JSON.stringify(token);
             const jsonInfoUser = JSON.stringify(infoUser);
+            const jsonavt=JSON.stringify(avt);
             await AsyncStorage.setItem('token', jsonToken);
             await AsyncStorage.setItem('infoUser', jsonInfoUser);
+            await AsyncStorage.setItem('avt',jsonavt)
         } catch (e) {
             // saving error
         }
@@ -53,6 +55,29 @@ export default function App(props) {
     function handleLogin() {
         setSpinner(true);
         senddata();
+    }
+    const getCodeForgetPass = async () => {
+        const res = await fetch(URL + 'api/auth/reset-code', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: username,
+            }),
+        })
+        console.log("status mail", res.status)
+    }
+    const handleForgetPass = () => {
+        if (!username.trim()) {
+            Alert.alert('Cảnh báo', 'Cần username trước khi thực hiện chức năng này')
+        }
+        else {
+            getCodeForgetPass();
+            props.navigation.navigate(ScreenKey.ForgetPass, {
+                username
+            });
+        }
     }
     return (
         <ImageBackground source={bgImage} style={styles.backgroundContainer}>
@@ -67,7 +92,11 @@ export default function App(props) {
             </View>
             <View style={styles.inputContainer}>
                 <Icon name={'ios-person-outline'} size={28} color={'rgba(255,255,255,0.7)'}
-                    style={styles.inputIcon} />
+                    style={{
+                        position: 'absolute',
+                        top: 8,
+                        left: 37
+                    }} />
                 <TextInput
                     style={styles.input}
                     placeholder={'Username'}
@@ -79,7 +108,11 @@ export default function App(props) {
             </View>
             <View style={styles.inputContainer}>
                 <Icon name={'ios-lock-closed-outline'} size={28} color={'rgba(255,255,255,0.7)'}
-                    style={styles.inputIcon} />
+                    style={{
+                        position: 'absolute',
+                        top: 8,
+                        left: 37
+                    }} />
                 <TextInput
                     style={styles.input}
                     placeholder={'Password'}
@@ -93,7 +126,7 @@ export default function App(props) {
                     />
                 </TouchableOpacity>
             </View>
-            <TouchableOpacity >
+            <TouchableOpacity onPress={handleForgetPass}>
                 <Text style={styles.textPass}>Quên mật khẩu</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.btnLogin} onPress={handleLogin}>
@@ -141,7 +174,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 8,
         left: 37
-    }, btnEye: {
+    },
+    btnEye: {
         position: 'absolute',
         top: 8,
         right: 37

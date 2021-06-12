@@ -5,11 +5,33 @@ import { URL, Text_Size } from '../../../globals/constants'
 import { Icon } from 'react-native-elements'
 import { SliderBox } from "react-native-image-slider-box";
 export default function DetailApart(props) {
-    const { name, area, direction, type, description } = props.route.params.item;
-    const [image, setImage] = useState(["https://apartment-management.s3.amazonaws.com/image-b979c96f-a3e9-4dc0-871b-b368332838191677321599-fe80f1dd-72ba-438a-9683-1dd6d6d1d691?AWSAccessKeyId=AKIAZHIFTEG6HCTW5EM3&Expires=1621326534&Signature=%2BtBN7EVFwvNcs0ZmHI2QsO1G7rk%3D",
-        "https://source.unsplash.com/1024x768/?water",
-        "https://source.unsplash.com/1024x768/?girl",
-        "https://source.unsplash.com/1024x768/?tree",])
+    const { name, area, direction, type, description,images } = props.route.params.item;
+    const {token }=props.route.params;
+    const [image, setImage] = useState([]);
+    const getImage = async (image) => {
+        const res = await fetch(URL + `api/uploadv2/image-url?key=${image}`, {
+            method: 'GET',
+            headers: {
+                Authorization: 'Bearer ' + `${token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+        if (res.status === 200) {
+            const result = await res.json();
+            console.log("URL ", result.imageUrl);
+            setImage(oldArray => [...oldArray, result.imageUrl]);
+        }
+        else {
+            setImage([]);
+        }
+    }
+
+    useEffect(()=>{
+        for (let temp of images) {
+            getImage(temp)
+        }
+
+    },[])
     return (
         <ImageBackground style={{ flex: 1, resizeMode: 'cover' }} source={require('../../../../image/bgDetail.jpg')}>
             <ScrollView style={styles.container}>

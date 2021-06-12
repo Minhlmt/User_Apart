@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
         flex: 1,
         color: 'rgba(3, 0, 0, 0.7)',
         marginBottom: 5,
-        fontSize: 16
+        fontSize: 18
     },
     status_done:{
         color:'blue'

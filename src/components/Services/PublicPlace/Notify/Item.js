@@ -3,20 +3,47 @@ import { Text, StyleSheet, View, TouchableOpacity } from 'react-native'
 import { Icon } from 'react-native-elements'
 import { ScreenKey, URL, notifyBillContext } from '../../../../globals/constants'
 function ItemParking(props) {
-    const [isreaduser,setIsReadUser]=useState(true);
+    const [isreaduser, setIsReadUser] = useState();
     const [create_date, setCreate_date] = useState();
-    useEffect(()=>{
+    const changeIsRead=async()=>{
+        const res = await fetch(URL + `api/register-service/change-is-read`, {
+            method: 'PUT',
+            headers: {
+                Authorization: 'Bearer ' + `${props.token}`,
+                'Content-Type': "application/json",
+            },
+            body:JSON.stringify({
+                register_id:props.item._id
+            })
+        })
+       
+        if (res.status === 200) {
+            const result = await res.json();
+            console.log("CHANGE read ",result);
+           
+        } 
+    }
+
+
+
+    useEffect(() => {
         var date = new Date(props.item.create_date);
         setCreate_date(date.getDate() +
             "/" + (date.getMonth() + 1) +
             "/" + date.getFullYear() +
             " " + date.getHours() +
             ":" + date.getMinutes() + ":" + date.getSeconds());
-    },[])
-    const handleDetail=()=>{
-        props.navigation.navigate(ScreenKey.DetailRegister,{
-            token:props.token,
-            item:props.item,
+        if (props.item.is_read_user)
+            setIsReadUser(false);
+        else
+            setIsReadUser(true);
+    }, [])
+    const handleDetail = () => {
+        changeIsRead();
+        setIsReadUser(false);
+        props.navigation.navigate(ScreenKey.DetailRegister, {
+            token: props.token,
+            item: props.item,
             create_date
         })
     }

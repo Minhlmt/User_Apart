@@ -154,10 +154,8 @@ export default function Home(props) {
         'Content-Type': "application/json",
       },
     })
-    console.log("STATUS FES ",res.status);
     if (res.status === 200) {
       const result = await res.json();
-      console.log("STAT ",result.data.length);
       setCountMessFes(result.data.length);
       
       if (result.data.length === 0) {
@@ -203,8 +201,6 @@ export default function Home(props) {
     getData();
   }, [month, year, flag])
   useEffect(() => {
-
-
     getcountMessParking(userId, token);
     getcountMessRepair(apartId, token);
     getcountFestival(userId, token)
@@ -251,7 +247,11 @@ export default function Home(props) {
   const handleClickRegister = () => {
     props.navigation.navigate(ScreenKey.MainRegister)
   }
-
+  const handleClickPost=()=>{
+    props.navigation.navigate(ScreenKey.Post, {
+      token: token
+    })
+  }
   return (
     // <Tab_Home_ProfileBillContext.Provider value={newMessBill}>
     <ScrollView style={{ flex: 1 }}>
@@ -341,7 +341,16 @@ export default function Home(props) {
 
 
 
-            <ItemService src='' name='jhg' />
+            <View style={styles.shadow_button}>
+              <TouchableOpacity style={styles.container} onPress={handleClickPost}>
+              
+                  <Image resizeMode='contain' style={styles.tinyLogo} source={require('../../../image/post.png')} />
+                  <View>
+                    <Text style={styles.text}>Bài đăng</Text>
+                  </View>
+              
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </ImageBackground>

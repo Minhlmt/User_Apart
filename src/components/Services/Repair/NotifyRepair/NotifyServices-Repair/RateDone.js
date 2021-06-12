@@ -56,13 +56,13 @@ export default function Rate(props) {
     }
     const handleLike = () => {
         setIslike(true);
-        setStatus("Thích");
+        setStatus("Hài lòng");
         setImageLike(require('../../../../../../image/redlike.png'));
         setImageDislike(require('../../../../../../image/dislike.png'))
     }
     const handleDisLike = () => {
         setIslike(false);
-        setStatus('Không thích');
+        setStatus('Không hài lòng');
         setImageLike(require('../../../../../../image/like.png'));
         setImageDislike(require('../../../../../../image/reddislike.png'))
     }
@@ -94,7 +94,7 @@ export default function Rate(props) {
                         source={imagelike}
 
                     />
-                    <Text style={{alignSelf:'center',fontSize:18}}>Thích</Text>
+                    <Text style={{alignSelf:'center',fontSize:18,fontStyle:'italic'}}>Hài lòng</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleDisLike}>
                     <Image
@@ -102,7 +102,7 @@ export default function Rate(props) {
                         style={styles.tinyLogo}
                         source={imageDislike}
                     />
-                    <Text style={{alignSelf:'center',fontSize:18}}>Không thích</Text>
+                    <Text style={{alignSelf:'center',fontSize:18,fontStyle:'italic'}}>Không hài lòng</Text>
                 </TouchableOpacity>
             </View>
             <View>
@@ -182,7 +182,8 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         paddingVertical: 10,
         paddingHorizontal: 12, marginTop: 100,
-        marginHorizontal: 10
+        marginHorizontal: 10,
+        marginBottom:15
     },
     myButton: {
         alignItems: 'center',

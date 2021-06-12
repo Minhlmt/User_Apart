@@ -30,7 +30,7 @@ export default function Apart(props) {
     const renderItem = ({ item }) => {
         
         return (
-         <ItemApart navigation={props.navigation} item={item}/>
+         <ItemApart navigation={props.navigation} item={item} token={token}/>
         );
       };
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, SectionList, Text, TextInput, View, Button, Image, Alert, TouchableOpacity, ImageBackground ,ScrollView} from 'react-native';
+import { StyleSheet, SectionList, Text, TextInput, View, Button, Image, Alert, TouchableOpacity, ImageBackground, ScrollView } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import CalDate from '../Bill/CalDate'
 import { Text_Size, URL } from '../../../globals/constants'
@@ -15,11 +15,12 @@ export default function Repair(props) {
   const [content, setContent] = useState('');
   const [userId, setUserId] = useState('123');
   const [token, setToken] = useState('');
-  const [apartId,setApartId]=useState();
+  const [apartId, setApartId] = useState();
   const [image, setImage] = useState(null);
   const [nameImage, setNameImage] = useState();
   const [nameExtension, setNameExtension] = useState();
-  const [iconDelete,setIconDelete]=useState(false);
+  const [iconDelete, setIconDelete] = useState(false);
+  const [tokenDevice, setTokenDevice] = useState();
   const [extension, setExtension] = useState();
   const [spinner, setSpinner] = useState(false);
   const [types3, settypes3] = useState([{ label: 'Khu vực chung', value: 0 }, { label: 'Khu vực riêng (tự sửa chữa)', value: 1 }, { label: 'Khu vực riêng (sử dụng dịch vụ sửa chữa)', value: 2 },]);
@@ -40,16 +41,50 @@ export default function Repair(props) {
 
         const _tokenObject = JSON.parse(_token);
         const _userIdObject = JSON.parse(_userId);
-        const _apartIdObJect=JSON.parse(_apartId)
+        const _apartIdObJect = JSON.parse(_apartId)
         // console.log(userId+" "+token+" "+apartId);
         setUserId(_userIdObject.id);
         setToken(_tokenObject);
         setApartId(_apartIdObJect);
+        getTokenDevicesAdmin(_tokenObject);
       }
 
     } catch (e) {
       // error reading value
     }
+  }
+  const getTokenDevicesAdmin = async (_token) => {
+    const res = await fetch(URL + `api/admin/token-device?role=0`, {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + `${_token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+
+    if (res.status === 200) {
+      const result = await res.json();
+      console.log("devices ", result);
+      setTokenDevice(result.data);
+    }
+  }
+  const pushNotifyAdmin = async () => {
+    console.log("token device ", tokenDevice);
+    const res = await fetch(URL + `api/push-noti/add-notice`, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + `${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        tokens: tokenDevice,
+        title: 'Khiếu nại bãi xe',
+        body: 'Có thông báo mới',
+        type: 2
+      })
+    })
+    console.log("SATUS ", res.status);
   }
   const sendImage = async () => {
     if (imageBase64 !== '') {
@@ -91,16 +126,16 @@ export default function Repair(props) {
               title: topic,
               content: content,
               author: userId,
-              apart_id:apartId,
+              apart_id: apartId,
               image: result.key,
-              type:value3Index
+              type: value3Index
 
             }),
           })
           console.log("STATUS_3", res_2.status);
           setSpinner(false);
           if (res_2.status === 200) {
-          
+
             Alert.alert('Thông báo', 'Báo cáo thành công',
               [
                 { text: "OK" }
@@ -123,7 +158,7 @@ export default function Repair(props) {
       }
     }
     else {
-      
+
       const res1 = await fetch(URL + 'api/repair/add', {
         method: 'POST',
         headers: {
@@ -134,16 +169,16 @@ export default function Repair(props) {
           title: topic,
           content: content,
           author: userId,
-          apart_id:apartId,
+          apart_id: apartId,
           image: '',
-          type:value3Index
+          type: value3Index
 
         }),
       })
       setSpinner(false);
       if (res1.status === 200) {
-        const result=await res1.json();
-        console.log("DATA ",result);
+        const result = await res1.json();
+        console.log("DATA ", result);
         Alert.alert('Thông báo', 'Báo cáo thành công',
           [
             { text: "OK" }
@@ -153,8 +188,8 @@ export default function Repair(props) {
   }
 
   const checkTextInput = async () => {
-    console.log("USERID ",userId)
-    console.log("token ",token);
+    console.log("USERID ", userId)
+    console.log("token ", token);
     //Check for the Name TextInput
     if (!topic.trim()) {
       Alert.alert('Thông báo', 'Chủ đề không được trống');
@@ -167,15 +202,14 @@ export default function Repair(props) {
     }
     else {
       setSpinner(true);
+      pushNotifyAdmin();
       await sendImage();
     }
-
-
 
   };
 
   useEffect(() => {
-    if(path!==''){
+    if (path !== '') {
       setIconDelete(true);
     }
     var filename = path.replace(/^.*[\\\/]/, '')
@@ -192,7 +226,7 @@ export default function Repair(props) {
     });
     getData();
   }, [props.route.params?.imageBase64])
-  const deleteImage=()=>{
+  const deleteImage = () => {
     setIconDelete(false);
     setImage({
       uri: '',
@@ -205,122 +239,122 @@ export default function Repair(props) {
 
     return (
       <TouchableOpacity style={styles.badgeIconView} onPress={deleteImage}>
-        {iconDelete ? <Text style={styles.badge}> X </Text>:<></> }
+        {iconDelete ? <Text style={styles.badge}> X </Text> : <></>}
         <Image
           style={{ width: 100, height: 100, resizeMode: 'contain' }}
           source={image}
         />
-        </TouchableOpacity>
+      </TouchableOpacity>
     );
   }
   const hanldeChooseImage = () => {
-          props.navigation.navigate(ScreenKey.ChooseImage)
-        }
+    props.navigation.navigate(ScreenKey.ChooseImage)
+  }
 
   return (
     <ScrollView>
-        <ImageBackground style={{ flex: 1, resizeMode: 'cover' }} source={require('../../../../image/background.jpg')}>
-          <Spinner
-            visible={spinner}
-            textContent={'Loading...'}
-            textStyle={styles.spinnerTextStyle}
-          />
-          <View style={styles.container}>
-            <View>
-              <Text style={styles.text2}>Chủ đề</Text>
-            </View>
-            <View style={styles.inputContainer}>
-              {/* <Icon name={'phone-portrait-outline'} size={28} color={'rgba(255,255,255,0.7)'}
-            style={styles.inputIcon} /> */}
-              <TextInput
-                style={styles.input2}
-                placeholderTextColor={'rgba(255,255,255,0.7)'}
-                underlineColorAndroid='transparent'
-                onChangeText={(text) => setTopic(text)}
-                multiline
-              />
-            </View>
-          </View>
-          <View style={styles.container}>
-            <View>
-              <Text style={styles.text2}>Nội dung</Text>
-            </View>
-            <View style={styles.inputContainer}>
-              {/* <Icon name={'phone-portrait-outline'} size={28} color={'rgba(255,255,255,0.7)'}
-            style={styles.inputIcon} /> */}
-              <TextInput
-                style={styles.input2}
-                placeholderTextColor={'rgba(255,255,255,0.7)'}
-                underlineColorAndroid='transparent'
-                multiline
-                onChangeText={(text) => setContent(text)}
-              />
-            </View>
-          </View>
-
-
+      <ImageBackground style={{ flex: 1, resizeMode: 'cover' }} source={require('../../../../image/background.jpg')}>
+        <Spinner
+          visible={spinner}
+          textContent={'Loading...'}
+          textStyle={styles.spinnerTextStyle}
+        />
+        <View style={styles.container}>
           <View>
-            <Text style={styles.text2}>Loại thông báo sửa chữa</Text>
+            <Text style={styles.text2}>Chủ đề</Text>
           </View>
-
-          <View style={{ marginLeft: 20, marginTop: 10 }}>
-
-            <RadioForm formHorizontal={false} animation={true}  >
-              {types3.map((obj, i) => {
-                var onPress = (value, index) => {
-
-                  setvalue3Index(index);
-                }
-                return (
-                  <RadioButton labelHorizontal={true} key={i} >
-                    {/*  You can set RadioButtonLabel before RadioButtonInput */}
-                    <RadioButtonInput
-                      obj={obj}
-                      index={i}
-                      isSelected={value3Index === i}
-                      onPress={onPress}
-                      buttonInnerColor={'rgba(0, 0, 255, 0.7)'}
-                      buttonOuterColor={value3Index === i ? '#2196f3' : '#000'}
-                      buttonSize={15}
-                      buttonStyle={{}}
-                      buttonWrapStyle={{ marginLeft: 10 }}
-                    />
-                    <RadioButtonLabel
-                      obj={obj}
-                      index={i}
-                      onPress={onPress}
-                      labelStyle={{ fontWeight: 'bold', color: '#2c3e50' }}
-                      labelWrapStyle={{}}
-                    />
-                  </RadioButton>
-                )
-              })}
-            </RadioForm>
+          <View style={styles.inputContainer}>
+            {/* <Icon name={'phone-portrait-outline'} size={28} color={'rgba(255,255,255,0.7)'}
+            style={styles.inputIcon} /> */}
+            <TextInput
+              style={styles.input2}
+              placeholderTextColor={'rgba(255,255,255,0.7)'}
+              underlineColorAndroid='transparent'
+              onChangeText={(text) => setTopic(text)}
+              multiline
+            />
           </View>
-          <View style={{ flexDirection: 'row' }}>
+        </View>
+        <View style={styles.container}>
+          <View>
+            <Text style={styles.text2}>Nội dung</Text>
+          </View>
+          <View style={styles.inputContainer}>
+            {/* <Icon name={'phone-portrait-outline'} size={28} color={'rgba(255,255,255,0.7)'}
+            style={styles.inputIcon} /> */}
+            <TextInput
+              style={styles.input2}
+              placeholderTextColor={'rgba(255,255,255,0.7)'}
+              underlineColorAndroid='transparent'
+              multiline
+              onChangeText={(text) => setContent(text)}
+            />
+          </View>
+        </View>
 
-            <View style={styles.button_image}>
-              <Button
-                onPress={hanldeChooseImage}
-                title="Chọn ảnh"
-                color="#841584"
 
-              />
+        <View>
+          <Text style={styles.text2}>Loại thông báo sửa chữa</Text>
+        </View>
 
-            </View>
-            {image ? renderAsset(image) : null}
+        <View style={{ marginLeft: 20, marginTop: 10 }}>
+
+          <RadioForm formHorizontal={false} animation={true}  >
+            {types3.map((obj, i) => {
+              var onPress = (value, index) => {
+
+                setvalue3Index(index);
+              }
+              return (
+                <RadioButton labelHorizontal={true} key={i} >
+                  {/*  You can set RadioButtonLabel before RadioButtonInput */}
+                  <RadioButtonInput
+                    obj={obj}
+                    index={i}
+                    isSelected={value3Index === i}
+                    onPress={onPress}
+                    buttonInnerColor={'rgba(0, 0, 255, 0.7)'}
+                    buttonOuterColor={value3Index === i ? '#2196f3' : '#000'}
+                    buttonSize={14}
+                    buttonStyle={{}}
+                    buttonWrapStyle={{ marginLeft: 10 }}
+                  />
+                  <RadioButtonLabel
+                    obj={obj}
+                    index={i}
+                    onPress={onPress}
+                    labelStyle={{ fontWeight: 'bold', color: '#2c3e50' ,marginLeft:5,fontSize:16}}
+                    labelWrapStyle={{}}
+                  />
+                </RadioButton>
+              )
+            })}
+          </RadioForm>
+        </View>
+        <View style={{ flexDirection: 'row' }}>
+
+          <View style={styles.button_image}>
+            <Button
+              onPress={hanldeChooseImage}
+              title="Chọn ảnh"
+              color="#841584"
+
+            />
 
           </View>
+          {image ? renderAsset(image) : null}
 
-          <TouchableOpacity onPress={checkTextInput} style={styles.appButtonContainer}>
-            <View style={styles.myButtonLogOut}>
+        </View>
 
-              <Text style={styles.appButtonText}>Gửi</Text>
+        <TouchableOpacity onPress={checkTextInput} style={styles.appButtonContainer}>
+          <View style={styles.myButtonLogOut}>
 
-            </View>
-          </TouchableOpacity>
+            <Text style={styles.appButtonText}>Gửi</Text>
 
-          {/* <View>
+          </View>
+        </TouchableOpacity>
+
+        {/* <View>
         <Button onPress={showDatepicker} title="Show date picker!" />
       </View>
       <View>
@@ -336,20 +370,20 @@ export default function Repair(props) {
           onChange={onChange}
         />
       )} */}
-        </ImageBackground>
-        </ScrollView>
+      </ImageBackground>
+    </ScrollView>
   )
 
 
 }
 const styles = StyleSheet.create({
-          container: {
-          flexDirection: 'column',
+  container: {
+    flexDirection: 'column',
     marginTop: 10,
 
   },
   button_image: {
-          flexDirection: 'column',
+    flexDirection: 'column',
     marginTop: 10,
     marginLeft: 10,
 
@@ -357,7 +391,7 @@ const styles = StyleSheet.create({
 
   },
   text: {
-          color: 'rgba(206, 0, 255, 1)',
+    color: 'rgba(206, 0, 255, 1)',
     fontSize: 20,
 
     fontWeight: 'bold',
@@ -366,7 +400,7 @@ const styles = StyleSheet.create({
 
   },
   text2: {
-          color: 'rgba(72, 100, 106, 1)',
+    color: 'rgba(72, 100, 106, 1)',
     fontSize: 20,
 
     fontWeight: 'bold',
@@ -375,10 +409,10 @@ const styles = StyleSheet.create({
 
   },
   inputContainer: {
-          marginTop: 10
+    marginTop: 10
   },
   input: {
-          width: WIDTH - 55,
+    width: WIDTH - 55,
     // height: 45,
     borderRadius: 10,
     fontSize: 20,
@@ -388,7 +422,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 25
   },
   input2: {
-          width: WIDTH - 55,
+    width: WIDTH - 55,
     // height: 45,
     borderRadius: 10,
     fontSize: 16,
@@ -398,17 +432,19 @@ const styles = StyleSheet.create({
     marginHorizontal: 25
   },
   inputIcon: {
-          position: 'absolute',
+    position: 'absolute',
     top: 8,
     left: 37
   },
 
   appButtonContainer: {
-          elevation: 8,
+    elevation: 8,
     backgroundColor: "#009688",
-    borderRadius: 10,
+    borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 12, marginTop: 10,
+    marginBottom: 15,
+    marginHorizontal: 10
 
   },
 
@@ -417,26 +453,26 @@ const styles = StyleSheet.create({
 
 
   appButtonText: {
-          fontSize: 16,
+    fontSize: 16,
     color: "#fff",
     fontWeight: "bold",
     alignSelf: "center",
     textTransform: "uppercase",
 
   },
-  badgeIconView:{
-    position:'relative',
-    padding:5
+  badgeIconView: {
+    position: 'relative',
+    padding: 5
   },
-  badge:{
-    color:'#fff',
-    position:'absolute',
-    zIndex:10,
-    top:1,
-    right:1,
-    padding:1,
-    backgroundColor:'red',
-    borderRadius:5
+  badge: {
+    color: '#fff',
+    position: 'absolute',
+    zIndex: 10,
+    top: 1,
+    right: 1,
+    padding: 1,
+    backgroundColor: 'red',
+    borderRadius: 5
   }
 
 });

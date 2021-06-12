@@ -7,6 +7,7 @@ import { ScreenKey } from '../../globals/constants'
 import { ScrollView } from 'react-native-gesture-handler';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { Icon } from 'react-native-elements'
+import { SliderBox } from "react-native-image-slider-box";
 import { ImageBackground } from 'react-native';
 // const cld = new Cloudinary({
 //     cloud: {
@@ -21,25 +22,27 @@ export default function NotifyDetailManage(props) {
     const [_image, setImage] = useState('');
     const [statusLink, setStatusLink] = useState(true);
     const { title, content, create_date, image, link, token, userId, notice_id } = props.route.params;
-    const changeStatusNotify = async () => {
-        const res = await fetch(URL + `api/noti/change-is-read`, {
-            method: 'POST',
+    const getImage = async () => {
+        const res = await fetch(URL + `api/uploadv2/image-url?key=${image}`, {
+            method: 'GET',
             headers: {
                 Authorization: 'Bearer ' + `${token}`,
                 'Content-Type': 'application/json',
             },
-
         })
-        const result = await res.json();
+        if (res.status === 200) {
+            const result = await res.json();
+            console.log("URL ", result.imageUrl);
+            setImage(oldArray => [...oldArray, result.imageUrl]);
+        }
+
     }
     useEffect(() => {
         if (image === '') {
             setStatusImage(false);
         }
         else {
-            // const myImage = cld.image(`${image}`);
-            // const myURL = myImage.toURL();
-            // setImage(myURL);
+            getImage();
         }
     
         if (link === '') {
@@ -67,11 +70,6 @@ export default function NotifyDetailManage(props) {
         <ScrollView style={styles.container}>
 
             <View>
-                {/* <Spinner
-                    visible={spinner}
-                    textContent={'Loading...'}
-                    textStyle={styles.spinnerTextStyle}
-                /> */}
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
                     <View style={styles.icon_title}>
                         <Icon name='topic'
@@ -136,12 +134,7 @@ export default function NotifyDetailManage(props) {
                         <Text style={styles.text}>Hình ảnh</Text>
                     </View>)}
 
-                <Image
-                    style={styles.tinyLogo}
-                    source={{
-                        uri: `${_image}`,
-                    }}
-                />
+                    <SliderBox resizeMode='contain' images={_image} />
             </View>
             {/* <Image cloudName="datnqlcc" publicId="datn-qlcc/gookgudncaqq6i28ez1s" width="300" crop="scale"/> */}
 

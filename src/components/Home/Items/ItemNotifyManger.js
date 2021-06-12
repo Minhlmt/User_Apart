@@ -68,8 +68,12 @@ return (
     <View style={{ flexDirection: 'column', justifyContent: 'space-between', elevation: 2 }}>
         <TouchableOpacity style={styles.container1} onPress={handleClick}>
             <Image style={{ width: 50, height: 50, borderRadius: 400 / 2 }} source={require('../../../../image/bell.png')} />
+            <View style={{flex:1,flexDirection:'column'}}>
 
+           
             <Text style={styles.text}>{props.title}</Text>
+            <Text style={{fontSize:14,color:'#c0392b'}}>{create_date}</Text>
+            </View>
             <View style={{ flexDirection: 'row', justifyContent: 'flex-end', width: 30 }}>
 
                 {status && (<Icon name='circle'
@@ -114,7 +118,7 @@ const styles = StyleSheet.create({
         flex: 1,
         color: 'rgba(3, 0, 0, 0.7)',
         marginBottom: 10,
-        fontSize: 20
+        fontSize: 18
     },
     status_wait: {
         fontSize: 12,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { StyleSheet, SectionList, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, SectionList, Text, View, Image, TouchableOpacity,ImageBackground } from 'react-native';
 import { ScreenKey, URL, notifyBillContext } from '../../../../globals/constants'
 import { Icon } from 'react-native-elements'
 export default function MainNotify(props) {
@@ -93,7 +93,7 @@ export default function MainNotify(props) {
         });
     }
     return (
-        <View>
+        <ImageBackground style={{ flex: 1, resizeMode: 'cover' }} source={require('../../../../../image/background.jpg')}>
             <View style={styles._title}>
                 <Text style={styles._text_title} >{`Thông báo`}</Text>
 
@@ -146,7 +146,7 @@ export default function MainNotify(props) {
                 </View>
             </TouchableOpacity>
 
-        </View>
+        </ImageBackground>
     )
 }
 const styles = StyleSheet.create({

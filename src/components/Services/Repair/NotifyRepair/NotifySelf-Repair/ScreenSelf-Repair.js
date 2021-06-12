@@ -13,7 +13,6 @@ const Tab = createMaterialTopTabNavigator();
 const Stack=createStackNavigator();
 export default function TabRepair ({route}){
   const {token,userId,apartId}=route.params
-
     return(
         <Tab.Navigator initialRouteName='WaitConfirm'  
         tabBarOptions={{

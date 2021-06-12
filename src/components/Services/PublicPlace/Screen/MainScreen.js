@@ -40,10 +40,10 @@ export default function MainScreenRepair(props) {
                 'Content-Type': "application/json",
             },
         })
-        console.log("STATUS FES ", res.status);
+      
         if (res.status === 200) {
             const result = await res.json();
-            console.log("STAT ", result.data.length);
+         
             setCountMess(result.data.length);
 
             if (result.data.length === 0) {

@@ -55,7 +55,22 @@ export const ScreenKey={
     MainRegister:'mainRegister',
     CreateRegister:'createRegister',
     NotifyRegister:'notifyRegister',
-    DetailRegister:'detailRegister'
+    DetailRegister:'detailRegister',
+
+
+    Post:'post',
+    MainPost:'mainPost',
+    AllPost:'allPost',
+    DetailPost:'detailPost',
+    ManagePost:'managePost',
+    MainManage:'mainManage',
+
+    CreatePost:'createPost',
+    ChooseManyImage:'chooseManyImage',
+    UpdatePost:'updatePost',
+    DetailManage:'detailManage',
+
+    ForgetPass:'forgetPass'
 
     
 
@@ -72,7 +87,7 @@ export const Text_Size={
     Text_title:25,
     Text_sum:22
 }
-export const URL="https://qlcc-api.herokuapp.com/";
+export const URL="http://ec2-18-139-209-41.ap-southeast-1.compute.amazonaws.com/";
 import React,{ createContext } from 'react';
 export const notifyBillContext=createContext(null);
 export const Tab_Home_ProfileBillContext=createContext(null);

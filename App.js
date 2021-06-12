@@ -8,6 +8,7 @@ import { Tab_Home_Profile } from './src/globals/screen'
 import Apartment from './src/components/Apartment/Apartment'
 import { ScreenKey, URL, notifyBillContext } from './src/globals/constants';
 import SignIn from './src/components/SignIn/SignIn'
+import ForgetPass from './src/components/SignIn/ForgetPass'
 import messaging from '@react-native-firebase/messaging';
 const MainNavigationStack = createStackNavigator();
 
@@ -163,6 +164,7 @@ export default function App({ navigation }) {
           <MainNavigationStack.Screen name={ScreenKey.Welcome} component={Welcome} options={{ headerShown: false }} initialParams={{ notifyBill }} />
           <MainNavigationStack.Screen name={ScreenKey.ChooseApart} component={Apartment} options={{ headerShown: false }} />
           <MainNavigationStack.Screen name={ScreenKey.SignIn} component={SignIn} options={{ headerShown: false }} />
+          <MainNavigationStack.Screen name={ScreenKey.ForgetPass} component={ForgetPass} options={{ headerShown: false }} />
         </MainNavigationStack.Navigator>
       </NavigationContainer >
     </notifyBillContext.Provider>

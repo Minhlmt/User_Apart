@@ -4,7 +4,9 @@ import { Icon } from 'react-native-elements'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 import { URL } from '../../../../globals/constants'
+import { SliderBox } from "react-native-image-slider-box";
 const { width: WIDTH } = Dimensions.get('window')
+import Spinner from 'react-native-loading-spinner-overlay';
 export default function Create(props) {
     const { token, userId } = props.route.params;
     const [modalVisible, setModalVisible] = useState(false);
@@ -23,6 +25,8 @@ export default function Create(props) {
     const [value3Index, setvalue3Index] = useState(0);
     const [dataPlace, setDataPlace] = useState([]);
     const [dataRegisted,setDataRegisted]=useState([]);
+    const [spinner,setSpinner]=useState(false);
+    const [_image,setImage]=useState(['https://i.pinimg.com/originals/9a/7a/6f/9a7a6f2b9c7b8433e7c947fb38d4f067.jpg']);
     const getPlace = async () => {
         const res = await fetch(URL + `api/service/all-services`, {
             method: 'GET',
@@ -72,7 +76,7 @@ export default function Create(props) {
                 term:value3Index
             })
         })
-      
+        setSpinner(false);
         if (res.status === 200) {
             Alert.alert("Thông báo","Đăng kí thành công")
             const result = await res.json();
@@ -80,6 +84,37 @@ export default function Create(props) {
         }
         else{
             Alert.alert("Thông báo","Server bảo trì")
+        }
+    }
+    const getImageFromData= async(idService)=>{
+        const newData = dataPlace.filter((item) => {
+            return (item._id === idService);
+        });
+        let arrImage=[];
+        for (let temp of newData[0].images)
+        {
+            console.log("image place ",temp);
+         
+           await getImageFromApi(temp,arrImage);
+        }
+        setImage(arrImage)
+    }
+    const getImageFromApi=async(image,arrImage)=>{
+        const res = await fetch(URL + `api/uploadv2/image-url?key=${image}`, {
+            method: 'GET',
+            headers: {
+                Authorization: 'Bearer ' + `${token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+        if (res.status === 200) {
+            const result = await res.json();
+            console.log("URL ", result.imageUrl);
+            arrImage.push(result.imageUrl);
+            // setImage(oldArray => [...oldArray, result.imageUrl]);
+        }
+        else {
+           arrImage.push('')
         }
     }
     useEffect(() => {
@@ -138,6 +173,7 @@ export default function Create(props) {
                     console.log("abc ", item.item._id);
                     setIdPlace(item.item._id);
                     getRegistered(item.item._id);
+                    getImageFromData(item.item._id);
                     // setIdApart(oldArray => [...oldArray, item.item._id]);
                     setNamePlace(item.item.name)
                     setModalVisible(false);
@@ -152,12 +188,18 @@ export default function Create(props) {
         setModalVisible(true);
     }
     const hanldeSend = () => {
+        setSpinner(true);
         sendRegister();
     }
     const showPicker = useCallback((value) => setShow(value), []);
     return (
         <ScrollView>
             <ImageBackground style={{ flex: 1, resizeMode: 'contain' }} source={require('../../../../../image/bgFestival.jpg')}>
+            <Spinner
+                        visible={spinner}
+                        textContent={'Loading...'}
+                        textStyle={styles.spinnerTextStyle}
+                    />
                 <Modal
                     animationType="slide"
                     transparent={true}
@@ -229,8 +271,12 @@ export default function Create(props) {
 
                         </View>
                     </TouchableOpacity>
-
+                   
                 </View>
+                <View style={{marginTop:10}}>
+                <SliderBox resizeMode='contain' images={_image} />
+                </View>
+             
 
 
                 <View style={styles._marginTop}>
@@ -375,11 +421,12 @@ const styles = StyleSheet.create({
     appButtonContainerLogOut: {
         // elevation: 8,
         backgroundColor: "rgba(114, 0, 157, 0.3)",
-        borderRadius: 10,
+        borderRadius: 20,
         paddingVertical: 10,
         paddingHorizontal: 12, marginTop: 15,
         marginLeft: 10,
-        marginRight: 10
+        marginRight: 10,
+        marginBottom:10
     },
     myButtonLogOut: {
         alignItems: 'center',

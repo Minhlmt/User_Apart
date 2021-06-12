@@ -48,9 +48,15 @@ export default function DetailServices(props) {
             setStatus('Chờ duyệt');
             setRate(false)
         }
-        if (item.status === 1){
+        else if (item.status === 1){
             setStatus('Đã duyệt');
             setRate(false);
+        }
+        else if(item.status===2){
+            setStatus('Hoàn thành')
+        }
+        else{
+            setStatus('Không duyệt')
         }
             
         if (item.status === 2 && item.evaluation.is_evaluate===false){
@@ -58,6 +64,8 @@ export default function DetailServices(props) {
             setStatus('Hoàn thành');
             setRate(true);
         }
+      
+      
            
 
 
@@ -86,7 +94,7 @@ export default function DetailServices(props) {
                             />
                             <Text style={styles.text}>Chủ đề</Text>
                         </View>
-                        <Text style={styles.text}>{status}</Text>
+                        <Text style={styles.textStaus}>{status}</Text>
                     </View>
 
                     <Text style={styles.text_input}>{title}</Text>
@@ -172,6 +180,22 @@ const styles = StyleSheet.create({
 
 
 
+    },
+    textStaus: {
+        color: 'white',
+        fontSize: Text_Size.Text,
+        marginTop: 2,
+        marginLeft: 5,
+        shadowColor: 'black',
+        shadowOpacity: 0.8,
+        elevation: 8,
+        backgroundColor: "green",
+        shadowRadius: 15,
+        shadowOffset: { width: 56, height: 13 },
+        borderWidth: 0,
+        borderRadius: 20,
+        borderWidth:0,
+        paddingHorizontal:10
     },
 
     text_status: {

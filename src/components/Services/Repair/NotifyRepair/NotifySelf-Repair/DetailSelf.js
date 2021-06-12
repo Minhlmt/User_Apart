@@ -8,11 +8,11 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { Icon } from 'react-native-elements'
 import { SliderBox } from "react-native-image-slider-box";
 export default function NotifyDetailRepair(props) {
-    const { item, create_date ,token} = props.route.params;
+    const { item, create_date, token } = props.route.params;
     const [title, setTitle] = useState(item.title);
     const [content, setContent] = useState(item.content);
     const [createDate, setCreateDate] = useState(create_date);
-    const [status,setStatus]=useState('');
+    const [status, setStatus] = useState('');
     // const [_image, setImage] = useState('');
     const [spinner, setSpinner] = useState(false);
     const [statusImage, setStatusImage] = useState(true);
@@ -37,17 +37,17 @@ export default function NotifyDetailRepair(props) {
         }
     }
     useEffect(() => {
-        
+
         if (item.image === '') {
             setStatusImage(false);
         }
         else {
             fetchData();
         }
-        if(item.status===0){
+        if (item.status === 0) {
             setStatus('Chờ duyệt')
         }
-        if(item.status===1)
+        if (item.status === 1)
             setStatus('Đã duyệt');
     }, [])
 
@@ -69,7 +69,7 @@ export default function NotifyDetailRepair(props) {
                             />
                             <Text style={styles.text}>Chủ đề</Text>
                         </View>
-                        <Text style={styles.text}>{status}</Text>
+                        <Text style={[styles.textStaus]}>{status}</Text>
                     </View>
 
                     <Text style={styles.text_input}>{title}</Text>
@@ -99,7 +99,7 @@ export default function NotifyDetailRepair(props) {
 
                     <Text style={styles.text_input}>{createDate}</Text>
                 </View>
-                
+
                 <View style={{ marginTop: 30 }}>
                     {statusImage && (
                         <View style={styles.icon_title}>
@@ -111,7 +111,7 @@ export default function NotifyDetailRepair(props) {
                             <Text style={styles.text}>Hình ảnh</Text>
                         </View>)}
 
-                        <SliderBox resizeMode='contain' images={_image} />
+                    <SliderBox resizeMode='contain' images={_image} />
                 </View>
                 {/* <Image cloudName="datnqlcc" publicId="datn-qlcc/gookgudncaqq6i28ez1s" width="300" crop="scale"/> */}
 
@@ -150,6 +150,22 @@ const styles = StyleSheet.create({
 
 
 
+    },
+    textStaus: {
+        color: 'white',
+        fontSize: Text_Size.Text,
+        marginTop: 2,
+        marginLeft: 5,
+        shadowColor: 'black',
+        shadowOpacity: 0.8,
+        elevation: 8,
+        backgroundColor: "green",
+        shadowRadius: 15,
+        shadowOffset: { width: 56, height: 13 },
+        borderWidth: 0,
+        borderRadius: 20,
+        borderWidth:0,
+        paddingHorizontal:5
     },
 
     text_status: {

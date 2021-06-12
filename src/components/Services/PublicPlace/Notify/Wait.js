@@ -54,7 +54,7 @@ export default function App(props) {
     />
 
   return (
-    <ImageBackground  style={{ flex: 1, resizeMode: 'cover' }}  source={require('../../../../../image/festival.png')}>
+    <ImageBackground  style={{ flex: 1, resizeMode: 'cover' }}  source={require('../../../../../image/bgFestival.jpg')}>
       <Spinner
         visible={spinner}
         textContent={'Loading...'}

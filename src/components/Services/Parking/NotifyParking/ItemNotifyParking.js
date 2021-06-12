@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, SectionList, Text, View, Image, TouchableOpacity } from 'react-native';
-import { ScreenKey, URL ,notifyBillContext} from '../../../../globals/constants'
+import { ScreenKey, URL, notifyBillContext } from '../../../../globals/constants'
 import { Icon } from 'react-native-elements'
 function ItemNotifyParking(props) {
-    const changeReload=useContext(notifyBillContext).changeReload;
+    const changeReload = useContext(notifyBillContext).changeReload;
     const [status, setStatus] = useState();
-    const [create_date,setCreate_date]=useState();
+    const [create_date, setCreate_date] = useState();
+    const [image,setImage]=useState('');
     const changeStatusNotify = async () => {
         const res = await fetch(URL + `api/noti-parking/change-is-read`, {
             method: 'PUT',
@@ -19,16 +20,16 @@ function ItemNotifyParking(props) {
         })
     }
     useEffect(() => {
-        
+
 
         if (props.item.is_read_user) {
             setStatus(false);
-         
+
 
         }
         else if (!props.item.is_read_user) {
             setStatus(true);
-           
+
         }
         var date = new Date(props.item.create_date);
         setCreate_date(date.getDate() +
@@ -36,8 +37,12 @@ function ItemNotifyParking(props) {
             "/" + date.getFullYear() +
             " " + date.getHours() +
             ":" + date.getMinutes() + ":" + date.getSeconds());
-
-
+        if (props.item.type===0){
+            setImage(require('../../../../../image/report.jpg'))
+        }
+        else{
+            setImage(require('../../../../../image/manage.png'))
+        }
     }, [props.status])
     const handleClick = () => {
         setStatus(false);
@@ -53,13 +58,21 @@ function ItemNotifyParking(props) {
     return (
         <View style={{ flexDirection: 'column', elevation: 2 }}>
             <TouchableOpacity style={styles.container1} onPress={handleClick}>
-                <View style={{ flexDirection: 'column' }}>
-                <Text style={styles.text}>{props.item.title}</Text>
-                    <Text>{create_date}</Text>
+                <View style={{flexDirection:'row'}}>
+                    <Image
+                        resizeMode='contain'
+                        style={styles.tinyLogo}
+                        source={image}
+
+                    />
+
+                    <View style={{ flexDirection: 'column' }}>
+                        <Text style={styles.text}>{props.item.title}</Text>
+                        <Text style={{ color: '#c0392b' }}>{create_date}</Text>
+                    </View>
                 </View>
 
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end', width: 30 }}>
-
                     {status && (<Icon name='circle'
                         type='font-awesome'
                         color='#3498db'
@@ -105,6 +118,10 @@ const styles = StyleSheet.create({
         color: 'rgba(3, 0, 0, 0.7)',
         marginBottom: 10,
         fontSize: 20
+    },
+    tinyLogo: {
+        width: 60, height: 60, borderRadius: 1000 / 2,marginRight:8
+
     },
     status_wait: {
         fontSize: 12,

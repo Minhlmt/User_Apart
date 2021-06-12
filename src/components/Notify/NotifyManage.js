@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, View, TouchableOpacity, ImageBackground } from 'react-native';
+import { FlatList, StyleSheet, Text, View, TouchableOpacity, ImageBackground ,ScrollView} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { URL } from '../../globals/constants'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -126,6 +126,7 @@ export default function App(props) {
         textContent={'Loading...'}
         textStyle={styles.spinnerTextStyle}
       />
+    
       <View style={styles.container1} >
         <View style={styles.background} >
           {/* <Image style={styles.image} source={require('../../../image/sea.jpg')} /> */}
@@ -135,6 +136,7 @@ export default function App(props) {
         </View>
       </View>
       {/* <ImageBackground source={require('../../../image/notify1.png')} style={styles.image1}> */}
+     
       <FlatList
         data={data}
         keyExtractor={(item, index) => index.toString()}
@@ -146,8 +148,9 @@ export default function App(props) {
         }}
         ListFooterComponent={() => loadingMore && <ListFooterComponent />}
       />
+    
       {/* </ImageBackground> */}
-
+     
     </ImageBackground>
 
   );

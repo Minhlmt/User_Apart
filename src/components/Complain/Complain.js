@@ -14,9 +14,9 @@ export default function Repair(props) {
     const [nameExtension, setNameExtension] = useState();
     const [extension, setExtension] = useState();
     const [image, setImage] = useState(null);
-    
+    const [tokenDevice, setTokenDevice] = useState();
     const [imagePublic, setImagePublic] = useState();
-    const { imageBase64, uri, width, height, path, mime,billId } = props.route.params;
+    const { imageBase64, uri, width, height, path, mime, billId } = props.route.params;
 
     const getData = async () => {
         try {
@@ -30,11 +30,42 @@ export default function Repair(props) {
 
 
                 setToken(_token);
-
+                getTokenDevicesAdmin(_token);
             }
 
         } catch (e) {
             // error reading value
+        }
+    }
+    const pushNotifyAdmin=async()=>{
+        const res = await fetch(URL + `api/push-noti/add-notice`, {
+          method: 'POST',
+          headers: {
+            Authorization: 'Bearer ' + `${token}`,
+            'Content-Type': 'application/json',
+          },
+          body:JSON.stringify({
+            tokens:tokenDevice,
+            title:'Khiếu nại hóa đơn',
+            body:'Có thông báo mới',
+            type:2
+          })
+        })
+      }
+    const getTokenDevicesAdmin = async (_token) => {
+        const res = await fetch(URL + `api/admin/token-device?role=0`, {
+            method: 'GET',
+            headers: {
+                Authorization: 'Bearer ' + `${_token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+
+
+        if (res.status === 200) {
+            const result = await res.json();
+            console.log("devices ", result);
+            setTokenDevice(result.data);
         }
     }
     useEffect(() => {
@@ -54,8 +85,9 @@ export default function Repair(props) {
         getData();
 
     }, [props.route.params?.imageBase64])
-    const handleSend = async () => {
 
+    const handleSend = async () => {
+        
         const res = await fetch(URL + `api/uploadv2/signed-url?fileName=${nameImage}&extension=${extension}&mediaType=image`, {
             method: 'GET',
             headers: {
@@ -67,9 +99,9 @@ export default function Repair(props) {
             // var body = new FormData();
             // body.append('file', imageBase64);
             const result = await res.json()
-         
-            let arrImage=[];
-            let imageKey=result.key;
+
+            let arrImage = [];
+            let imageKey = result.key;
             arrImage.push(imageKey);
 
 
@@ -86,29 +118,34 @@ export default function Repair(props) {
                 },
                 body: fileBlob, // This is your file object
             });
-            if(serverRes.status===200){
-                const res_2 = await fetch(URL + `api/all-bill/update-image`, {
+            if (serverRes.status === 200) {
+                console.log("Bill Id ",billId);
+                console.log("imaga ",arrImage)
+                const res_2 = await fetch(URL + `api/all-bill/report`, {
                     method: 'PUT',
                     headers: {
                         Authorization: 'Bearer ' + `${token}`,
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                       bill_id:billId,
-                       image:arrImage
+                        bill_id: billId,
+                        image: arrImage
                     }),
                 })
-                if(res_2.status===200){
+                if (res_2.status === 200) {
+                    const test1=await res_2.json();
+                    console.log("test1 ",test1)
+                    pushNotifyAdmin();
                     Alert.alert('Thông báo', 'Khiếu nại thành công',
-                    [
-                      { text: "OK",onPress: ()=>props.navigation.navigate(ScreenKey.HomeService)}
-                    ]);
+                        [
+                            { text: "OK", onPress: () => props.navigation.navigate(ScreenKey.HomeService) }
+                        ]);
                 }
-                else{
+                else {
                     Alert.alert('Thông báo', 'Server đang bảo trì ! Vui lòng thử lại sau',
-                    [
-                      { text: "OK" ,onPress:()=>props.navigation.navigate(ScreenKey.HomeService)}
-                    ]);
+                        [
+                            { text: "OK", onPress: () => props.navigation.navigate(ScreenKey.HomeService) }
+                        ]);
                 }
 
             }
