@@ -84,7 +84,7 @@ export default function App(props) {
         }
     }
 
-    const element = (data.length === 0) ? <View style={styles.emptyContainer}><Text style={styles.textEmpty}>Không có dữ liệu</Text></View> :
+    const element = (data.length === 0) ? <View style={styles.emptyContainer}><Text style={styles.textEmpty}>Không có thông báo mới</Text></View> :
     <FlatList
     data={data}
     keyExtractor={(item, index) => index.toString()}

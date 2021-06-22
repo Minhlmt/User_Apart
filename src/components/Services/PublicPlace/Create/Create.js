@@ -25,8 +25,9 @@ export default function Create(props) {
     const [value3Index, setvalue3Index] = useState(0);
     const [dataPlace, setDataPlace] = useState([]);
     const [dataRegisted,setDataRegisted]=useState([]);
+    const [tokenDevice, setTokenDevice] = useState();
     const [spinner,setSpinner]=useState(false);
-    const [_image,setImage]=useState(['https://i.pinimg.com/originals/9a/7a/6f/9a7a6f2b9c7b8433e7c947fb38d4f067.jpg']);
+    const [_image,setImage]=useState([]);
     const getPlace = async () => {
         const res = await fetch(URL + `api/service/all-services`, {
             method: 'GET',
@@ -43,6 +44,39 @@ export default function Create(props) {
 
 
     }
+    const getTokenDevicesAdmin = async () => {
+        const res = await fetch(URL + `api/admin/token-device?role=0`, {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + `${token}`,
+            'Content-Type': 'application/json',
+          },
+        })
+    
+    
+        if (res.status === 200) {
+          const result = await res.json();
+          console.log("devices ", result);
+          setTokenDevice(result.data);
+        }
+      }
+      const pushNotifyAdmin = async () => {
+        console.log("token device ", tokenDevice);
+        const res = await fetch(URL + `api/push-noti/add-notice`, {
+          method: 'POST',
+          headers: {
+            Authorization: 'Bearer ' + `${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            tokens: tokenDevice,
+            title: 'Đăng kí sử dụng',
+            body: 'Có thông báo mới',
+            type: 2
+          })
+        })
+        console.log("SATUS ", res.status);
+      }
     const getRegistered=async(id)=>{
         const res = await fetch(URL+`api/register-service/all-register?service_id=${id}&status=0`, {
             method: 'GET',
@@ -121,6 +155,7 @@ export default function Create(props) {
         var date = new Date();
         date.setDate(date.getDate() + 2);
         setMinimumDate(date);
+        getTokenDevicesAdmin();
         getPlace();
     }, [])
 
@@ -189,6 +224,7 @@ export default function Create(props) {
     }
     const hanldeSend = () => {
         setSpinner(true);
+        pushNotifyAdmin();
         sendRegister();
     }
     const showPicker = useCallback((value) => setShow(value), []);

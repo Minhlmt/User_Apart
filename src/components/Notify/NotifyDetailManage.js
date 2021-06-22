@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, View, TouchableOpacity, Image, BackHandler, Alert, Linking } from 'react-native';
+import { FlatList, StyleSheet, Text, View, TouchableOpacity, Image, BackHandler, Alert, Linking,Dimensions } from 'react-native';
 // import { Cloudinary } from '@cloudinary/base';
 
 import { URL, Text_Size } from '../../globals/constants'
@@ -9,6 +9,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { Icon } from 'react-native-elements'
 import { SliderBox } from "react-native-image-slider-box";
 import { ImageBackground } from 'react-native';
+import ImageZoom from 'react-native-image-pan-zoom';
 // const cld = new Cloudinary({
 //     cloud: {
 //         cloudName: 'datnqlcc'
@@ -33,7 +34,7 @@ export default function NotifyDetailManage(props) {
         if (res.status === 200) {
             const result = await res.json();
             console.log("URL ", result.imageUrl);
-            setImage(oldArray => [...oldArray, result.imageUrl]);
+            setImage(result.imageUrl);
         }
 
     }
@@ -44,7 +45,7 @@ export default function NotifyDetailManage(props) {
         else {
             getImage();
         }
-    
+
         if (link === '') {
             setStatusLink(false);
         }
@@ -66,50 +67,50 @@ export default function NotifyDetailManage(props) {
     }, [])
 
     return (
-        <ImageBackground  style={{ flex: 1, resizeMode: 'cover' }} source={require('../../../image/bgDetail.jpg')}>
-        <ScrollView style={styles.container}>
+        <ImageBackground style={{ flex: 1, resizeMode: 'cover' }} source={require('../../../image/bgDetail.jpg')}>
+            <ScrollView style={styles.container}>
 
-            <View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
+                <View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
+                        <View style={styles.icon_title}>
+                            <Icon name='topic'
+                                type='material'
+                                color='#e74c3c'
+                                size={30}
+                            />
+                            <Text style={styles.text}>Chủ đề</Text>
+                        </View>
+                        {/* <Text style={styles.text}>{status}</Text> */}
+                    </View>
+
+                    <Text style={styles.text_input}>{title}</Text>
+
+                </View>
+                <View style={{ marginTop: 30 }}>
                     <View style={styles.icon_title}>
-                        <Icon name='topic'
-                            type='material'
-                            color='#e74c3c'
+                        <Icon name='content-paste'
+                            type='material-community'
+                            color='#9b59b6'
                             size={30}
                         />
-                        <Text style={styles.text}>Chủ đề</Text>
+                        <Text style={styles.text}>Nội dung</Text>
                     </View>
-                    {/* <Text style={styles.text}>{status}</Text> */}
+
+                    <Text style={styles.text_input}>{content}</Text>
+                </View>
+                <View style={{ marginTop: 30 }}>
+                    <View style={styles.icon_title}>
+                        <Icon name='date'
+                            type='fontisto'
+                            color='#34495e'
+                            size={25}
+                        />
+                        <Text style={styles.text}>Ngày đăng</Text>
+                    </View>
+
+                    <Text style={styles.text_input}>{create_date}</Text>
                 </View>
 
-                <Text style={styles.text_input}>{title}</Text>
-
-            </View>
-            <View style={{ marginTop: 30 }}>
-                <View style={styles.icon_title}>
-                    <Icon name='content-paste'
-                        type='material-community'
-                        color='#9b59b6'
-                        size={30}
-                    />
-                    <Text style={styles.text}>Nội dung</Text>
-                </View>
-
-                <Text style={styles.text_input}>{content}</Text>
-            </View>
-            <View style={{ marginTop: 30 }}>
-                <View style={styles.icon_title}>
-                    <Icon name='date'
-                        type='fontisto'
-                        color='#34495e'
-                        size={25}
-                    />
-                    <Text style={styles.text}>Ngày đăng</Text>
-                </View>
-
-                <Text style={styles.text_input}>{create_date}</Text>
-            </View>
-           
                 {statusLink && (
                     <View style={{ marginTop: 30 }}>
                         <View style={styles.icon_title}>
@@ -121,26 +122,34 @@ export default function NotifyDetailManage(props) {
                             <Text style={styles.text}>Bài viết</Text>
                         </View>
 
-                        <Text style={styles.text_input}  onPress={() => Linking.openURL(`${link}`)}>{link}</Text>
+                        <Text style={styles.text_input} onPress={() => Linking.openURL(`${link}`)}>{link}</Text>
                     </View>)}
-            <View style={{ marginTop: 30 }}>
-                {statusImage && (
-                    <View style={styles.icon_title}>
-                        <Icon name='image'
-                            type='font-awesome'
-                            color='#f1c40f'
-                            size={25}
-                        />
-                        <Text style={styles.text}>Hình ảnh</Text>
-                    </View>)}
+                <View style={{ marginTop: 30 }}>
+                    {statusImage && (
+                        <View style={styles.icon_title}>
+                            <Icon name='image'
+                                type='font-awesome'
+                                color='#f1c40f'
+                                size={25}
+                            />
+                            <Text style={styles.text}>Hình ảnh</Text>
+                        </View>)}
 
-                    <SliderBox resizeMode='contain' images={_image} />
-            </View>
-            {/* <Image cloudName="datnqlcc" publicId="datn-qlcc/gookgudncaqq6i28ez1s" width="300" crop="scale"/> */}
+                    
+                </View>
+                {/* <Image cloudName="datnqlcc" publicId="datn-qlcc/gookgudncaqq6i28ez1s" width="300" crop="scale"/> */}
 
+                <ImageZoom cropWidth={Dimensions.get('window').width}
+                        cropHeight={300}
+                        imageWidth={300}
+                        imageHeight={300}
+                        enableCenterFocus={true}>
+                            
+                        <Image style={{ width: 300, height: 300 }}
+                            source={{uri:`${_image}`}} />
+                    </ImageZoom>
 
-
-        </ScrollView>
+            </ScrollView>
         </ImageBackground>
     )
 }
@@ -178,7 +187,7 @@ const styles = StyleSheet.create({
     text_input: {
         color: '#34495e',
         fontSize: Text_Size.Text,
-        marginTop:10,
+        marginTop: 10,
         borderColor: '#2ecc71',
         borderBottomWidth: 0.3
 

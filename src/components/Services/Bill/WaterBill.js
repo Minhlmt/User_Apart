@@ -116,7 +116,13 @@ export default function WaterBill({route}) {
                 textStyle={styles.spinnerTextStyle}
             />
               <View style={styles.container}>
-                <TouchableOpacity onPress={() => showPicker(true)}>
+                <TouchableOpacity onPress={() => showPicker(true)} style={{flexDirection:'row'}}>
+                <Icon name='calendar'
+                        type='font-awesome'
+                        color='#34495e'
+                        size={25}
+                        style={{ marginRight: 5 }}
+                    />
                     <Text style={styles.text}>Tháng {month}, năm {year}</Text>
                 </TouchableOpacity>
                 
@@ -124,7 +130,7 @@ export default function WaterBill({route}) {
                 <TouchableOpacity onPress={handleClick}>
                 <Icon name='search1'
                         type='antdesign'
-                        color='#f1c40f'
+                        color='#d35400'
                         size={25}
                 />
                 </TouchableOpacity>

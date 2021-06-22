@@ -20,10 +20,10 @@ export default function Home(props) {
   const [apartId, setApartId] = useState();
   const [token, setToken] = useState();
   const [flag, setFlag] = useState(true);
-  const [sumMoney, setSumMoney] = useState();
+  const [sumMoney, setSumMoney] = useState(0);
   const [ruleDate, setRuleDate] = useState(10);
   const [bntComplain, setbtnComplain] = useState();
-  const [is_pay, setIsPay] = useState();
+  const [is_pay, setIsPay] = useState('Chưa có dữ liệu');
   const [billId, setBillId] = useState();
   const [userId, setUserId] = useState();
   const [countMessParking, setCountMessParking] = useState();
@@ -55,7 +55,8 @@ export default function Home(props) {
     }
   }
   const fetchData1 = async () => {
-
+    console.log("thang ",month);
+    console.log("Namw ",year);
     const res = await fetch(URL + `api/all-bill/bill/${apartId}/${month}/${year}`, {
       method: 'GET',
       headers: {
@@ -63,7 +64,7 @@ export default function Home(props) {
         'Content-Type': 'application/json',
       },
     })
-
+    console.log("tonrg ",res.status);
     if (res.status === 200) {
       const result = await res.json();
 
@@ -83,7 +84,7 @@ export default function Home(props) {
         else {
           setIsPay("Chưa thanh toán")
         }
-        var today = new Date("2021-08-11");
+        var today = new Date();
         let date = CalDate(today);
         if (parseInt(date.dd) >= ruleDate && (!result.data.is_pay))
           return setbtnComplain(true);
@@ -178,7 +179,7 @@ export default function Home(props) {
 
   useEffect(() => {
 
-    var today = new Date("2021-08-11");
+    var today = new Date();
 
 
     let date = CalDate(today);

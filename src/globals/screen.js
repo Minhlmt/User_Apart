@@ -51,11 +51,15 @@ export const Tab_Home_Profile = (props) => {
     try {
      
       const token = await AsyncStorage.getItem('token');
-      const infoUser = await AsyncStorage.getItem('infoUser')
+      const infoUser = await AsyncStorage.getItem('infoUser');
+      const apart_Id = await AsyncStorage.getItem('apartId');
       if (token !== null) {
         const _infoUser = JSON.parse(infoUser);
         const _token = JSON.parse(token);
-        await fetchData(_infoUser.id, _token)
+        const _apartId=JSON.parse(apart_Id);
+
+        // await fetchData(_infoUser.id, _token)
+        await fetchData(_apartId, _token)
 
       }
 
@@ -63,9 +67,9 @@ export const Tab_Home_Profile = (props) => {
       // error reading value
     }
   }
-  const fetchData = async (userId, token) => {
+  const fetchData = async (apartId, token) => {
     
-    const res = await fetch(URL + `api/noti/unread/${userId}`, {
+    const res = await fetch(URL + `api/noti/unread/${apartId}`, {
       method: 'GET',
       headers: {
         Authorization: 'Bearer ' + `${token}`,

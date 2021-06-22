@@ -79,7 +79,7 @@ export default function NotifyDetailRepair(props) {
                             />
                             <Text style={styles.text}>Nơi tổ chức</Text>
                         </View>
-                        <Text style={styles.text}>{status}</Text>
+                        <Text style={styles.textStaus}>{status}</Text>
                     </View>
 
                     <Text style={styles.text_input}>{namePlace}</Text>
@@ -161,6 +161,22 @@ const styles = StyleSheet.create({
         marginLeft: 10
         // justifyContent:'center'
 
+    },
+    textStaus: {
+        color: 'white',
+        fontSize: Text_Size.Text,
+        marginTop: 2,
+        marginLeft: 5,
+        shadowColor: 'black',
+        shadowOpacity: 0.8,
+        elevation: 8,
+        backgroundColor: "green",
+        shadowRadius: 15,
+        shadowOffset: { width: 56, height: 13 },
+        borderWidth: 0,
+        borderRadius: 20,
+        borderWidth:0,
+        paddingHorizontal:10
     },
     text: {
         color: '#1abc9c',

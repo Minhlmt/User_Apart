@@ -29,6 +29,36 @@ export default function DetailManage(props) {
             getImage(temp)
         }
     }, [])
+    const deletePost = async () => {
+        const res = await fetch(URL + `api/post/delete`, {
+            method: 'DELETE',
+            headers: {
+                Authorization: 'Bearer ' + `${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                post_id: item._id
+            })
+        })
+        console.log("STATUS DELETE ", res.status);
+        if (res.status === 200) {
+            Alert.alert(
+                "Thông báo",
+                "Bài viết đã xóa",
+                [
+                    { text: "OK", onPress: () => {props.navigation.navigate(ScreenKey.MainManage)} }
+                ]
+            );
+
+        }
+        else{
+            Alert.alert(
+                "Thông báo",
+                "Vui lòng thử lại sau"
+              
+            );
+        }
+    }
 
     const handleDelete = () => {
         Alert.alert(
@@ -40,7 +70,7 @@ export default function DetailManage(props) {
                     onPress: () => console.log("Cancel Pressed"),
 
                 },
-                { text: "OK", onPress: () => console.log("OK Pressed") }
+                { text: "OK", onPress: () => {deletePost();} }
             ]
         );
     }
@@ -55,8 +85,9 @@ export default function DetailManage(props) {
                         <Text style={styles.text}>{item.content} </Text>
                         <Text style={styles.text}>Vui lòng liên hệ sdt: {item.contact} để biết thêm chi tiết</Text>
                     </View>
-                    <SliderBox resizeMode='contain' images={_image} />
+                 
                 </View>
+                <SliderBox resizeMode='contain' images={_image} />
                 <View style={styles.rowButton}>
 
                     <TouchableOpacity style={[styles.appButtonContainer, { backgroundColor: 'red' }]} onPress={handleDelete}>

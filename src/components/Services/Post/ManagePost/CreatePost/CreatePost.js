@@ -17,6 +17,7 @@ export default function Repair(props) {
     const [image, setImage] = useState(null);
     const [spinner, setSpinner] = useState(false);
     const [contact, setContact] = useState('');
+    const [tokenDevice, setTokenDevice] = useState();
     const { arrImage } = props.route.params;
 
 
@@ -37,6 +38,7 @@ export default function Repair(props) {
                 setUserId(_userIdObject.id);
                 setToken(_tokenObject);
                 setApartId(_apartIdObJect);
+                getTokenDevicesAdmin(_tokenObject);
             }
 
         } catch (e) {
@@ -73,6 +75,39 @@ export default function Repair(props) {
             console.log("STATUS_2", serverRes.status);
         }
     }
+    const getTokenDevicesAdmin = async (_token) => {
+        const res = await fetch(URL + `api/admin/token-device?role=0`, {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + `${_token}`,
+            'Content-Type': 'application/json',
+          },
+        })
+    
+    
+        if (res.status === 200) {
+          const result = await res.json();
+          console.log("devices ", result);
+          setTokenDevice(result.data);
+        }
+      }
+      const pushNotifyAdmin = async () => {
+        console.log("token device ", tokenDevice);
+        const res = await fetch(URL + `api/push-noti/add-notice`, {
+          method: 'POST',
+          headers: {
+            Authorization: 'Bearer ' + `${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            tokens: tokenDevice,
+            title: 'Đăng kí sử dụng',
+            body: 'Có thông báo mới',
+            type: 2
+          })
+        })
+        console.log("SATUS ", res.status);
+      }
     const saveDb = async (keyImage) => {
         setSpinner(false);
         const res = await fetch(URL + `api/post/create`, {
@@ -124,6 +159,7 @@ export default function Repair(props) {
             return;
         }
         else {
+            pushNotifyAdmin();
             setSpinner(true);
             const keyImage = []
             if(image!==null){

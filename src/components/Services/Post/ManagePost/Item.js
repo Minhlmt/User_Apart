@@ -83,7 +83,7 @@ function ItemParking(props) {
     }
 
     return (
-        <MenuProvider style={{ flex: 1 }}>
+        <MenuProvider style={{ flex: 1, borderBottomWidth:1}}>
             <View style={styles.container1}>
                 <TouchableOpacity onPress={handleDetail}>
                     <View style={{ flexDirection: 'column' }}>
@@ -102,8 +102,9 @@ function ItemParking(props) {
                     </View>
 
                 </TouchableOpacity>
-                <SliderBox resizeMode='contain' images={_image} />
+                
             </View>
+            <SliderBox resizeMode='contain' images={_image} />
         </MenuProvider>
     )
 }

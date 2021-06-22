@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, View, TouchableOpacity, ImageBackground ,ScrollView} from 'react-native';
+import { FlatList, StyleSheet, Text, View, TouchableOpacity, ImageBackground, ScrollView } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { URL } from '../../globals/constants'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -34,13 +34,14 @@ export default function App(props) {
   const [flag, setFlag] = useState(true);
   const [load, setLoad] = useState(false);
   const [userId, setUserId] = useState();
+  const [apartId,setApartId]=useState();
   const [alive, setAlive] = useState();
   const [spinner, setSpinner] = useState(false);
-  const {updateBadge}=props.route.params;
+  const { updateBadge } = props.route.params;
   const renderItem = ({ item }) => {
     let is_read;
     for (let receivers of item.receivers) {
-      if (receivers.user_id === userId) {
+      if (receivers.apart_id === apartId) {
         is_read = receivers.is_read;
       }
     }
@@ -49,18 +50,22 @@ export default function App(props) {
 
       <ItemNotifyManger id={item._id} title={item.title} content={item.content} create_date={item.create_date}
         image={item.image} link={item.link}
-        status={is_read} navigation={props.navigation} token={token} userId={userId} updateBadge={updateBadge}/>
+        status={is_read} navigation={props.navigation} token={token} userId={userId} updateBadge={updateBadge} apartId={apartId}/>
     );
   };
   const getData = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
       const infoUser = await AsyncStorage.getItem('infoUser');
+      const apart_Id = await AsyncStorage.getItem('apartId');
       if (token !== null) {
         const _token = JSON.parse(token);
         const _info = JSON.parse(infoUser);
+        const _apartId=JSON.parse(apart_Id);
         setUserId(_info.id);
         setToken(_token);
+        setApartId(_apartId);
+        console.log("apartIDABC ",_apartId);
         setFlag(false);
       }
     } catch (e) {
@@ -68,8 +73,8 @@ export default function App(props) {
     }
   }
   const fetchData = async () => {
-    console.log("USERID ",userId);
-    const res = await fetch(URL + `api/noti/user/${userId}/${page}/10`, {
+    console.log("ACD ",apartId);
+    const res = await fetch(URL + `api/noti/user/${apartId}/${page}/10`, {
       method: 'GET',
       headers: {
         Authorization: 'Bearer ' + `${token}`,
@@ -77,7 +82,7 @@ export default function App(props) {
       },
 
     })
-    console.log("STATUS ",res.status)
+    console.log("STATUS ", res.status)
 
     setSpinner(false);
     if (res.status === 200) {
@@ -119,6 +124,18 @@ export default function App(props) {
 
   };
 
+  const element = (data.length === 0) ? <View style={styles.emptyContainer}><Text style={styles.textEmpty}>Không có thông báo</Text></View> :
+    <FlatList
+      data={data}
+      keyExtractor={(item, index) => index.toString()}
+      renderItem={renderItem}
+      onEndReached={handleOnEndReached}
+      onEndReachedThreshold={0.1}
+      onScrollBeginDrag={() => {
+
+      }}
+      ListFooterComponent={() => loadingMore && <ListFooterComponent />}
+    />
   return (
     <ImageBackground style={{ flex: 1, resizeMode: 'cover' }} source={require('../../../image/background.jpg')}>
       <Spinner
@@ -126,7 +143,7 @@ export default function App(props) {
         textContent={'Loading...'}
         textStyle={styles.spinnerTextStyle}
       />
-    
+
       <View style={styles.container1} >
         <View style={styles.background} >
           {/* <Image style={styles.image} source={require('../../../image/sea.jpg')} /> */}
@@ -136,21 +153,11 @@ export default function App(props) {
         </View>
       </View>
       {/* <ImageBackground source={require('../../../image/notify1.png')} style={styles.image1}> */}
-     
-      <FlatList
-        data={data}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderItem}
-        onEndReached={handleOnEndReached}
-        onEndReachedThreshold={0.1}
-        onScrollBeginDrag={() => {
 
-        }}
-        ListFooterComponent={() => loadingMore && <ListFooterComponent />}
-      />
-    
+      {element}
+
       {/* </ImageBackground> */}
-     
+
     </ImageBackground>
 
   );
@@ -230,4 +237,10 @@ const styles = StyleSheet.create({
     // marginLeft: window.width / 2,
     backgroundColor: '#9DD6EB'
   },
+  textEmpty: {
+    fontSize: 20
+  },
+  emptyContainer: {
+    flex:1,flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
+  }
 });

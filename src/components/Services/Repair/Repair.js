@@ -79,7 +79,7 @@ export default function Repair(props) {
       },
       body: JSON.stringify({
         tokens: tokenDevice,
-        title: 'Khiếu nại bãi xe',
+        title: 'Sửa chữa căn hộ',
         body: 'Có thông báo mới',
         type: 2
       })
@@ -88,6 +88,8 @@ export default function Repair(props) {
   }
   const sendImage = async () => {
     if (imageBase64 !== '') {
+      console.log("nameImage ",nameImage);
+      console.log("extension ",extension);
       const res = await fetch(URL + `api/uploadv2/signed-url?fileName=${nameImage}&extension=${extension}&mediaType=image`, {
         method: 'GET',
         headers: {
@@ -95,6 +97,7 @@ export default function Repair(props) {
           'Content-Type': 'application/json',
         },
       })
+      setSpinner(false);
       console.log("STATUS_1", res.status);
       if (res.status === 200) {
         // var body = new FormData();
@@ -133,7 +136,7 @@ export default function Repair(props) {
             }),
           })
           console.log("STATUS_3", res_2.status);
-          setSpinner(false);
+       
           if (res_2.status === 200) {
 
             Alert.alert('Thông báo', 'Báo cáo thành công',

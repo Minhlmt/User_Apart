@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { StyleSheet, SectionList, Text, View, Image, TouchableOpacity,ImageBackground } from 'react-native';
+import { StyleSheet, SectionList, Text, View, Image, TouchableOpacity, ImageBackground } from 'react-native';
 import { Text_Size, URL } from '../../../globals/constants'
 import MonthPicker from 'react-native-month-year-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -11,16 +11,16 @@ export default function SumBill({ route }) {
     const [water, setWater] = useState(0);
     const [other, setOther] = useState(0);
     const [sumPrice, setSumPrice] = useState(0);
-    const [flag,setFlag]=useState(true);
+    const [flag, setFlag] = useState(true);
     const [spinner, setSpinner] = useState(false);
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
     const [month, setMonth] = useState(0);
     const [year, setYear] = useState(0);
     const { monthYear, apartId, token } = route.params;
-    
+
     const showPicker = useCallback((value) => setShow(value), []);
-    let tempSum=0;
+    let tempSum = 0;
     const onValueChange = useCallback(
         (event, newDate) => {
             const selectedDate = newDate || date;
@@ -36,7 +36,7 @@ export default function SumBill({ route }) {
                 setMonth(mydate.mm);
                 setYear(mydate.yyyy);
             }
-           
+
 
         },
         [date, showPicker],
@@ -50,23 +50,23 @@ export default function SumBill({ route }) {
                 'Content-Type': 'application/json',
             },
         })
-        if(res.status===200){
-            const result=await res.json();
-            if(result.data.length!==0){
+        if (res.status === 200) {
+            const result = await res.json();
+            if (result.data.length !== 0) {
                 setElectric(numeral(result.data.electric_bill.toString()).format('0,0'));
                 setWater(numeral(result.data.water_bill.toString()).format('0,0'));
                 setOther(numeral(result.data.other_bill.toString()).format('0,0'));
                 setSumPrice(numeral(result.data.total_money.toString()).format('0,0'))
             }
-            else{
+            else {
                 setElectric(0);
                 setWater(0);
                 setOther(0);
                 setSumPrice(0);
             }
-          
+
         }
-        else{
+        else {
             setElectric(0);
             setWater(0);
             setOther(0);
@@ -74,10 +74,10 @@ export default function SumBill({ route }) {
         }
         setSpinner(false)
 
-        
-     
- 
-         
+
+
+
+
 
 
     }
@@ -101,24 +101,30 @@ export default function SumBill({ route }) {
         setSpinner(true);
         setFlag(false);
         getdata();
-       
+
 
     }, [flag]);
     const handleClick = () => {
         setSpinner(true);
         getdata();
-        
+
     }
 
     return (
-        <ImageBackground  style={{ flex: 1, resizeMode: 'cover' }} source={require('../../../../image/bill1.jpg')}>
-             <Spinner
+        <ImageBackground style={{ flex: 1, resizeMode: 'cover' }} source={require('../../../../image/bill1.jpg')}>
+            <Spinner
                 visible={spinner}
                 textContent={'Loading...'}
                 textStyle={styles.spinnerTextStyle}
             />
             <View style={styles.container}>
-                <TouchableOpacity onPress={() => showPicker(true)}>
+                <TouchableOpacity onPress={() => showPicker(true)} style={{ flexDirection: 'row' }}>
+                    <Icon name='calendar'
+                        type='font-awesome'
+                        color='#34495e'
+                        size={25}
+                        style={{ marginRight: 5 }}
+                    />
                     <Text style={styles.text}>Tháng {month}, năm {year}</Text>
                 </TouchableOpacity>
 
@@ -126,7 +132,7 @@ export default function SumBill({ route }) {
                 <TouchableOpacity onPress={handleClick}>
                     <Icon name='search1'
                         type='antdesign'
-                        color='#f1c40f'
+                        color='#d35400'
                         size={25}
                     />
                 </TouchableOpacity>
@@ -172,7 +178,8 @@ const styles = StyleSheet.create({
     },
     text: {
         color: 'black',
-        fontSize: Text_Size.Text
+        fontSize: Text_Size.Text,
+
     },
     text_title: {
         color: 'black',

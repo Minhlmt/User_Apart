@@ -44,6 +44,7 @@ export default function ItemApart(props) {
                             type='font-awesome'
                             color='blue'
                             size={30}
+                            style={{marginRight:5}}
                         />
                         
                         <Text style={[styles.text, { color: 'blue' ,marginTop:5}]}>Căn hộ: {props.item.name} - </Text>

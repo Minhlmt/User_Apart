@@ -29,17 +29,17 @@ const ListFooterComponent = () => (
 export default function App(props) {
     const [data, setData] = useState([]);
     const [spinner, setSpinner] = useState(false);
-    const [token,setToken]=useState();
-    const [userId,setUserId]=useState();
+    const [token, setToken] = useState();
+    const [userId, setUserId] = useState();
 
     const getData = async () => {
         try {
             const token = await AsyncStorage.getItem('token');
             const apartId = await AsyncStorage.getItem('apartId');
-            const userInfo=await AsyncStorage.getItem('infoUser');
+            const userInfo = await AsyncStorage.getItem('infoUser');
             if (apartId !== null && token !== null) {
                 const _token = JSON.parse(token);
-                const _infoUser=JSON.parse(userInfo);
+                const _infoUser = JSON.parse(userInfo);
                 setUserId(_infoUser.id);
                 setToken(_token);
                 await fetchData(_token, _infoUser.id)
@@ -53,8 +53,8 @@ export default function App(props) {
     const renderItem = ({ item }) => {
 
         return (
-    
-            <ItemNotìyParking item={item} navigation={props.navigation} token={token}/>
+
+            <ItemNotìyParking item={item} navigation={props.navigation} token={token} />
         );
     };
     const fetchData = async (token, userId) => {
@@ -68,10 +68,10 @@ export default function App(props) {
         })
         setSpinner(false);
         if (res.status === 200) {
-              const result = await res.json();
-              setData(result.data)
+            const result = await res.json();
+            setData(result.data)
 
-            
+
         }
     }
     useEffect(() => {
@@ -80,7 +80,12 @@ export default function App(props) {
     }, []);
 
 
-
+    const element = (data.length === 0) ? <View style={styles.emptyContainer}><Text style={styles.textEmpty}>Không có thông báo mới</Text></View> :
+        <FlatList
+            data={data}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={renderItem}
+        />
     return (
         <ImageBackground style={{ flex: 1, resizeMode: 'cover' }} source={require('../../../../../image/background.jpg')}>
             <Spinner
@@ -93,11 +98,7 @@ export default function App(props) {
             </View>
 
 
-            <FlatList
-                data={data}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={renderItem}
-            />
+          {element}
         </ImageBackground>
 
     );
@@ -195,4 +196,14 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         textTransform: 'capitalize',
     },
+    textEmpty: {
+        fontSize: 20
+      },
+      emptyContainer: {
+          flex:1,
+     
+        justifyContent: 'center',
+        alignItems: 'center',
+       
+      }
 });

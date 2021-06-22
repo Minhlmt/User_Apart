@@ -40,7 +40,7 @@ const changeStatusNotify = async () => {
         },
         body: JSON.stringify({
             notice_id: props.id,
-            user_id: props.userId,
+            apart_id: props.apartId,
             status: true,
         })
     })
