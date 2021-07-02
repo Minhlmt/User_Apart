@@ -44,14 +44,15 @@ export default function ChangeInfo(props) {
         user_id, name,
         phone: newPhone,
         email: newEmail,
-        identify_card, native_place
+        
       })
 
     })
-
+    setSpinner(false);
+    console.log("status info ",res.status);
     if (res.status === 200) {
       const result = await res.json();
-      setSpinner(false);
+     
       storeData(result.data);
       getData();
       Alert.alert(

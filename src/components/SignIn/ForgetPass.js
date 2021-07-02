@@ -67,15 +67,16 @@ export default function Apartment(props) {
                     <Text style={styles.welcome}>Vui lòng kiểm tra mail và nhập mã code vào đây </Text>
                     <TextInput
                         style={styles.input2}
-                        placeholderTextColor={'rgba(255,255,255,0.7)'}
+                        placeholderTextColor={'#660000'}
                         underlineColorAndroid='transparent'
+                        keyboardType={'numeric'}
                         onChangeText={(text) => setCode(text)}
                         multiline
                     />
                     <Text style={styles.welcome}>Nhập mật khẩu mới</Text>
                     <TextInput
                         style={styles.input2}
-                        placeholderTextColor={'rgba(255,255,255,0.7)'}
+                        placeholderTextColor={'#660000'}
                         underlineColorAndroid='transparent'
                         onChangeText={(text) => setPassWord(text)}
                         secureTextEntry={true}
@@ -156,8 +157,10 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         fontSize: 16,
 
-        backgroundColor: ' rgba(0, 0, 0, 0.3)',
-        color: 'rgba(255, 255, 255, 1)',
+        backgroundColor: ' rgba(255, 255, 255, 0.3)',
+        borderWidth:1,
+        borderColor:'#33CC00',
+        color: '#660000',
         marginHorizontal: 20
     },
 

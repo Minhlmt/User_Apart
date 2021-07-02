@@ -25,7 +25,7 @@ export default function App(props) {
     );
   };
   const getdata = async () => {
-    const res = await fetch(URL + `api/repair/notices?author=${userId}&type=2&status=3`, {
+    const res = await fetch(URL + `api/repair/notices?apart_id=${apartId}&type=2&status=3`, {
         method: 'GET',
         headers: {
             Authorization: 'Bearer ' + `${token}`,

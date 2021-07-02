@@ -112,6 +112,7 @@ export default function App({ navigation }) {
       if (remoteMessage.data.type === "1") {
         storeDataNotifyBill(remoteMessage.data.type);
         setNotifyBill(true);
+        setReloadBadge({...reloadBadge,reloadBadge:!reloadBadge})
       }
       else{
         console.log("RELOAD");

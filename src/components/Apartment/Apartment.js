@@ -1,67 +1,73 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, SectionList, Text, View, Image, TouchableOpacity ,ScrollView} from 'react-native';
+import { StyleSheet, SectionList, Text, View, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { URL, Text_Size } from '../../globals/constants'
 import { ScreenKey } from '../../globals/constants'
 import { Dimensions } from 'react-native';
 import { ImageBackground } from 'react-native';
+
 const window = Dimensions.get('window');
 export default function Apartment(props) {
     // const { token, userId } = props.route.params;
-    const {token,userId}=props.route.params;
+    const { token, userId } = props.route.params;
     const [apart, setApart] = useState([]);
     const [apartId, setApartId] = useState();
+    const [dataApart, setDataApart] = useState([]);
     const [types3, settypes3] = useState([{ label: 'param1', value: 0 }, { label: 'param2', value: 1 }, { label: 'param3', value: 2 },]);
     const [value3, setvalue3] = useState(0);
     const [value3Index, setvalue3Index] = useState(0);
     const getInfoApart = async () => {
+        try {
+            const res = await fetch(URL + `api/apart/all-aparts/${userId}`, {
+                method: 'GET',
+                headers: {
+                    Authorization: 'Bearer ' + `${token}`,
+                    'Content-Type': 'application/json',
+                },
 
-        const res = await fetch(URL + `api/apart/all-aparts/${userId}`, {
-            method: 'GET',
-            headers: {
-                Authorization: 'Bearer ' + `${token}`,
-                'Content-Type': 'application/json',
-            },
+            })
 
-        })
-       
-        if (res.status === 200) {
-            const result = await res.json();
-            let block_Id = [];
-            let name_apart=[];
-            let block_name=[];
-            let apart_Id=[];
-            for (let t of result.data) {
-                block_Id.push(t.block);
-                name_apart.push(t.name);
-                apart_Id.push(t._id);
-            }
-            for(let block_id of block_Id){
-                const res_1 = await fetch(URL + `api/block/${block_id}`, {
-                    method: 'GET',
-                    headers: {
-                        Authorization: 'Bearer ' + `${token}`,
-                        'Content-Type': 'application/json',
-                    },
-        
-                })
-                const result_1 = await res_1.json();
-                if(res_1.status===200){
-                    block_name.push(result_1.data.name);
+            if (res.status === 200) {
+                const result = await res.json();
+                setDataApart(result.data);
+                let block_Id = [];
+                let name_apart = [];
+                let block_name = [];
+                let apart_Id = [];
+                for (let t of result.data) {
+                    block_Id.push(t.block);
+                    name_apart.push(t.name);
+                    apart_Id.push(t._id);
                 }
-               
+                for (let block_id of block_Id) {
+                    const res_1 = await fetch(URL + `api/block/${block_id}`, {
+                        method: 'GET',
+                        headers: {
+                            Authorization: 'Bearer ' + `${token}`,
+                            'Content-Type': 'application/json',
+                        },
+
+                    })
+                    const result_1 = await res_1.json();
+                    if (res_1.status === 200) {
+                        block_name.push(result_1.data.name);
+                    }
+
+                }
+                let temp_apart = []
+                for (var i = 0; i < apart_Id.length; i++) {
+                    const temp = {
+                        label: "Tòa: " + block_name[i] + " " + " nhà: " + name_apart[i],
+                        value: apart_Id[i]
+                    }
+                    temp_apart.push(temp);
+                }
+                setApartId(temp_apart[0].value);
+                setApart(temp_apart);
             }
-            let temp_apart=[]
-            for (var i = 0; i < apart_Id.length; i++) {
-                const temp = {
-                            label: "toa: " + block_name[i] + " " + " nha: " + name_apart[i],
-                            value: apart_Id[i]
-                        }
-                temp_apart.push(temp);
-              }
-            setApartId(temp_apart[0].value);
-            setApart(temp_apart);
+        } catch (error) {
+            Alert.alert(error);
         }
     }
 
@@ -79,99 +85,108 @@ export default function Apartment(props) {
         }
     }
     const handleClick = () => {
+        const newData = dataApart.filter((item) => {
+            return (item._id === apartId);
+        });
+        if (newData[0].owner.is_active) {
+            storeData(apartId);
 
-        storeData(apartId);
-        
-        props.navigation.navigate(ScreenKey.Home,{imageBase64:''});
+            props.navigation.navigate(ScreenKey.Home, { imageBase64: '' });
+        }
+        else {
+            Alert.alert('Hướng dẫn',"Vui lòng liên hệ BQL để sử dụng app")
+
+        }
+
     }
 
     return (
-       
-       
-             <ImageBackground  style={{ flex: 1, resizeMode: 'cover' }} source={require('../../../image/bgApart.jpg')}>
-          
-                   <View style={styles._title}>
+
+
+        <ImageBackground style={{ flex: 1, resizeMode: 'cover' }} source={require('../../../image/bgApart.jpg')}>
+
+            <View style={styles._title}>
                 <Text style={styles._text_title} >{`WELCOME,\nCÁM ƠN BẠN ĐÃ SỬ DỤNG DỊCH VỤ CHÚNG TÔI !`}</Text>
-               
+
             </View>
-            <View style={{ flex:1, flexDirection:'column',justifyContent:'space-around'}}>
+            <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-around' }}>
 
                 <View >
 
-              
-                <Text style={styles.welcome}>Mời bạn chọn căn hộ </Text>
-                <View style={styles.component}>
-                    <RadioForm formHorizontal={false} animation={true}  >
-                        {apart.map((obj, i) => {
-                            var onPress = (value, index) => {
-                                console.log("value ",value);
-                                setApartId(value);
-                                // setvalue3(value);
-                                setvalue3Index(index);
-                                
-                            }
-                            return (
-                                <RadioButton labelHorizontal={true} key={i} >
-                                    {/*  You can set RadioButtonLabel before RadioButtonInput */}
-                                    <RadioButtonInput
-                                        obj={obj}
-                                        index={i}
-                                        isSelected={value3Index === i}
-                                        onPress={onPress}
-                                        buttonInnerColor={'rgba(0, 0, 255, 0.7)'}
-                                        buttonOuterColor={value3Index === i ? '#2196f3' : '#000'}
-                                        buttonSize={15}
-                                        buttonStyle={{}}
-                                        buttonWrapStyle={{ marginLeft: 10 }}
-                                    />
-                                    <RadioButtonLabel
-                                        obj={obj}
-                                        index={i}
-                                        onPress={onPress}
-                                        labelStyle={{ fontWeight: 'bold', color: '#2ecc71',fontSize:20 }}
-                                        labelWrapStyle={{}}
-                                    />
-                                </RadioButton>
-                            )
-                        })}
-                    </RadioForm>
-                    {/* <Text>selected: {types3[value3Index].label}</Text> */}
-                </View>
+
+                    <Text style={styles.welcome}>Mời bạn chọn căn hộ </Text>
+                    <View style={styles.component}>
+                        <RadioForm formHorizontal={false} animation={true}  >
+                            {apart.map((obj, i) => {
+                                var onPress = (value, index) => {
+                                    console.log("value ", value);
+                                    setApartId(value);
+                                    // setvalue3(value);
+                                    setvalue3Index(index);
+
+                                }
+                                return (
+                                    <RadioButton labelHorizontal={true} key={i} >
+                                        {/*  You can set RadioButtonLabel before RadioButtonInput */}
+                                        <RadioButtonInput
+                                            obj={obj}
+                                            index={i}
+                                            isSelected={value3Index === i}
+                                            onPress={onPress}
+                                            buttonInnerColor={'rgba(0, 0, 255, 0.7)'}
+                                            buttonOuterColor={value3Index === i ? '#2196f3' : '#000'}
+                                            buttonSize={15}
+                                            buttonStyle={{}}
+                                            buttonWrapStyle={{ marginLeft: 10 }}
+                                        />
+                                        <RadioButtonLabel
+                                            obj={obj}
+                                            index={i}
+                                            onPress={onPress}
+                                            labelStyle={{ fontWeight: 'bold', color: '#2ecc71',marginLeft:5, fontSize: 20 }}
+                                            labelWrapStyle={{}}
+                                        />
+                                    </RadioButton>
+                                )
+                            })}
+                        </RadioForm>
+                        {/* <Text>selected: {types3[value3Index].label}</Text> */}
+                    </View>
                 </View>
                 <TouchableOpacity onPress={handleClick} style={styles.container}>
-                <View >
-                    <Text style={styles.text_title}>Next</Text>
+                    <View >
+                        <Text style={styles.text_title}>Next</Text>
 
-                </View>
-            </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
 
             </View>
-           
-            </ImageBackground>
-      
+
+        </ImageBackground>
+
     );
 }
 
 
 const styles = StyleSheet.create({
     container: {
-       
-        flexDirection:'column',
+
+        flexDirection: 'column',
         alignItems: 'center',
-        justifyContent:'center',
-        alignContent:'center',
-        marginRight:20,
+        justifyContent: 'center',
+        alignContent: 'center',
+        marginRight: 20,
         backgroundColor: 'rgba(0, 0, 255, 0.4)',
-        paddingVertical:20,
-        marginHorizontal:10,
-        borderRadius:25
+        paddingVertical: 20,
+        marginHorizontal: 10,
+        borderRadius: 25
     },
     welcome: {
         fontSize: 22,
         textAlign: 'center',
         marginTop: 20,
         marginBottom: 20,
-        color:'rgba(46, 138, 138, 0.9)'
+        color: 'rgba(46, 138, 138, 0.9)'
     },
     instructions: {
         textAlign: 'center',

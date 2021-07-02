@@ -21,11 +21,15 @@ function ItemParking(props) {
             setIsReadUser(false);
         else
             setIsReadUser(true);
-        if (props.item.type===2 && props.item.status===2&& !props.item.evaluation.is_evaluate) {
-        
-            setRate('chưa đánh giá')
+        if (props.item.type === 2 && props.item.status === 2 && !props.item.evaluation.is_evaluate) {
+
+            setRate(<Icon name='star'
+                type='antdesign'
+                color='#f39c12'
+                size={30}
+            />)
         }
-        else{
+        else {
             setRate('');
         }
 
@@ -60,12 +64,12 @@ function ItemParking(props) {
             })
         }
         else if (props.item.type === 1) {
-            if(props.item.status===1){
+            if (props.item.status === 1) {
                 changeIsRead();
                 // changeReload();
                 setIsReadUser(false);
             }
-           
+
             props.navigation.navigate(ScreenKey.DetailSelf, {
                 item: props.item,
                 create_date,
@@ -73,12 +77,12 @@ function ItemParking(props) {
             })
         }
         else {
-            if(props.item.status===1 || props.item.status===2 || props.item.status===3){
+            if (props.item.status === 1 || props.item.status === 2 || props.item.status === 3) {
                 changeIsRead();
                 // changeReload();
                 setIsReadUser(false);
             }
-         
+
             props.navigation.navigate(ScreenKey.DetailServices, {
                 item: props.item,
                 create_date,
@@ -95,8 +99,8 @@ function ItemParking(props) {
                     <Text style={styles.sumPrice}>{create_date} </Text>
 
                 </View>
-                <View style={{ flexDirection: 'row' }}>
-                    <Text style={{width:50, color:'#c0392b',fontWeight:'bold'}}>{rate}</Text>
+                <View style={{ flexDirection: 'row'}}>
+                    <Text style={{ fontWeight: 'bold',alignSelf:'center' }}>{rate}</Text>
                     <View style={{ flexDirection: 'column' }}>
                         <Icon name='arrow-forward-ios'
                             type='material'

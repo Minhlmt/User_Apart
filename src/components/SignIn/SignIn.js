@@ -35,7 +35,7 @@ export default function App(props) {
             props.navigation.navigate(ScreenKey.ChooseApart, { token: result.token, userId: result.infoUser.id });
         } else {
             setSpinner(false);
-            Alert.alert("Login", 'username or password invalid');
+            Alert.alert("Login", 'Username hoặc password không đúng');
         }
 
     }
@@ -57,7 +57,7 @@ export default function App(props) {
         senddata();
     }
     const getCodeForgetPass = async () => {
-        const res = await fetch(URL + 'api/auth/reset-code', {
+        const res = await fetch('https://qlcc-api.herokuapp.com/' + 'api/auth/reset-code', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -66,17 +66,25 @@ export default function App(props) {
                 username: username,
             }),
         })
-        console.log("status mail", res.status)
+        setSpinner(false);
+        console.log("status mail", res.status);
+        if(res.status===200){
+            props.navigation.navigate(ScreenKey.ForgetPass, {
+                username
+            });
+        }
+        else{
+            Alert.alert("Cảnh báo","Username không đúng")
+        }
     }
     const handleForgetPass = () => {
         if (!username.trim()) {
             Alert.alert('Cảnh báo', 'Cần username trước khi thực hiện chức năng này')
         }
         else {
+            setSpinner(true);
             getCodeForgetPass();
-            props.navigation.navigate(ScreenKey.ForgetPass, {
-                username
-            });
+           
         }
     }
     return (
@@ -86,28 +94,30 @@ export default function App(props) {
                 textContent={'Loading...'}
                 textStyle={styles.spinnerTextStyle}
             />
+              <Image source={require('../../../image/logo1.png')} style={{width:100,height:100,alignSelf:'center'}} />
             <View style={styles.logoContainer}>
-                {/* <Image source={Logo} style={styles.logo} backfaceVisibility={'hidden'} /> */}
-                <Text style={styles.logoText}>REACT NATIVE</Text>
+                <Image source={require('../../../image/login.png')} style={styles.logo} />
+                <Text style={styles.logoText}>Login</Text>
             </View>
             <View style={styles.inputContainer}>
-                <Icon name={'ios-person-outline'} size={28} color={'rgba(255,255,255,0.7)'}
+                <Icon name={'ios-person-outline'} size={28} color={'rgba(255,255,255,1)'}
                     style={{
                         position: 'absolute',
                         top: 8,
-                        left: 37
+                        left: 37,
+                        
                     }} />
                 <TextInput
                     style={styles.input}
                     placeholder={'Username'}
-                    placeholderTextColor={'rgba(255,255,255,0.7)'}
+                    placeholderTextColor={'rgba(255,255,255,1)'}
                     underlineColorAndroid='transparent'
                     onChangeText={text => setUsername(text)}
 
                 />
             </View>
             <View style={styles.inputContainer}>
-                <Icon name={'ios-lock-closed-outline'} size={28} color={'rgba(255,255,255,0.7)'}
+                <Icon name={'ios-lock-closed-outline'} size={28} color={'rgba(255,255,255,1)'}
                     style={{
                         position: 'absolute',
                         top: 8,
@@ -117,7 +127,7 @@ export default function App(props) {
                     style={styles.input}
                     placeholder={'Password'}
                     secureTextEntry={showPass}
-                    placeholderTextColor={'rgba(255,255,255,0.7)'}
+                    placeholderTextColor={'rgba(255,255,255,1)'}
                     underlineColorAndroid='transparent'
                     onChangeText={text => setPass(text)}
                 />
@@ -142,12 +152,14 @@ const styles = StyleSheet.create({
         alignContent: 'center'
     },
     logoContainer: {
+        flexDirection:'row',
+        justifyContent:'center',
         alignItems: 'center',
         marginBottom: 50
     },
     logo: {
-        width: 120,
-        height: 120,
+        width: 50,
+        height: 50,
         // color:'rgba(255,255,255,0.7)'
     },
     logoText: {
@@ -155,7 +167,7 @@ const styles = StyleSheet.create({
         fontSize: 40,
         fontWeight: 'bold',
         marginTop: 10,
-        opacity: 0.5
+        opacity: 1
     },
     inputContainer: {
         marginTop: 10
@@ -167,7 +179,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         paddingLeft: 45,
         backgroundColor: 'rgba(0,0,0,0.35)',
-        color: 'rgba(255,255,255,0.7)',
+        color: 'rgba(255,255,255,1)',
         marginHorizontal: 25
     },
     inputIcon: {

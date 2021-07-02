@@ -25,7 +25,7 @@ export default function NotifyPublic(props) {
     }
     
     const getdata = async () => {
-        const res = await fetch(URL + `api/repair/notices?author=${userId}&type=0`, {
+        const res = await fetch(URL + `api/repair/notices?apart_id=${apartId}&type=0`, {
             method: 'GET',
             headers: {
                 Authorization: 'Bearer ' + `${token}`,

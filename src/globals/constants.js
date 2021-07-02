@@ -87,7 +87,7 @@ export const Text_Size={
     Text_title:25,
     Text_sum:22
 }
-export const URL="https://qlcc-api.herokuapp.com/";
+export const URL="http://ec2-52-221-188-166.ap-southeast-1.compute.amazonaws.com/";
 import React,{ createContext } from 'react';
 export const notifyBillContext=createContext(null);
 export const Tab_Home_ProfileBillContext=createContext(null);

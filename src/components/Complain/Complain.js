@@ -87,7 +87,9 @@ export default function Repair(props) {
     }, [props.route.params?.imageBase64])
 
     const handleSend = async () => {
-        
+        try {
+            
+       
         const res = await fetch(URL + `api/uploadv2/signed-url?fileName=${nameImage}&extension=${extension}&mediaType=image`, {
             method: 'GET',
             headers: {
@@ -152,6 +154,9 @@ export default function Repair(props) {
             console.log("RES_1 STATUS ", serverRes.status);
 
         }
+    } catch (error) {
+            Alert.alert(error)
+    }
     }
     const renderAsset = (image) => {
 
@@ -169,6 +174,9 @@ export default function Repair(props) {
             <View style={styles._title}>
                 <Text style={styles._text_title} >Khiếu nại</Text>
             </View>
+            <Text style={{marginHorizontal:5,fontSize:18,color:"blue",marginTop:10}}>
+                Mời bạn chọn ảnh để chứng minh bạn đã thực hiện thanh toán (biên lai hoặc lịch sử chuyển khoản)
+            </Text>
             <View style={{ flexDirection: 'row' }}>
 
                 <View style={styles.button_image}>
@@ -262,9 +270,10 @@ const styles = StyleSheet.create({
     appButtonContainer: {
         elevation: 8,
         backgroundColor: "#009688",
-        borderRadius: 10,
+        borderRadius: 20,
         paddingVertical: 10,
         paddingHorizontal: 12, marginTop: 10,
+        marginHorizontal:10
 
     },
 

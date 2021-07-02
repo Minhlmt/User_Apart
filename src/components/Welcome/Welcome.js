@@ -10,7 +10,7 @@ export default function Welcome(props){
     useEffect(()=>{
         const timeout=setTimeout(()=>{
         setComponent(<IsSignIn navigation={props.navigation}/>)
-        },1000);
+        },5000);
         return ()=>{
             clearTimeout(timeout);
         }

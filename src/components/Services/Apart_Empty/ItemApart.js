@@ -3,8 +3,8 @@ import { StyleSheet, SectionList, Text, View, Image, TouchableOpacity } from 're
 import { ScreenKey, URL } from '../../../globals/constants'
 import { Icon } from 'react-native-elements'
 import { SliderBox } from "react-native-image-slider-box";
-export default function ItemApart(props) {
-    const [_image, setImage] = useState(['https://i.pinimg.com/originals/9a/7a/6f/9a7a6f2b9c7b8433e7c947fb38d4f067.jpg'])
+ function ItemApart(props) {
+    const [_image, setImage] = useState(['https://neohouse.vn/wp-content/uploads/2019/01/noi-that-phong-khach-chung-cu-70m2-1.jpg'])
     const getImage = async () => {
         const res = await fetch(URL + `api/uploadv2/image-url?key=${props.item.images[0]}`, {
             method: 'GET',
@@ -17,7 +17,6 @@ export default function ItemApart(props) {
             const result = await res.json();
             let arrImage = [];
             arrImage.push(result.imageUrl);
-            console.log("URL ", result.imageUrl);
             setImage(arrImage);
         }
     }
@@ -57,6 +56,7 @@ export default function ItemApart(props) {
         </View>
     )
 }
+export default React.memo(ItemApart);
 const styles = StyleSheet.create({
     container1: {
         flexDirection: 'column',

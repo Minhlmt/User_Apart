@@ -36,7 +36,7 @@ export default function Create(props) {
                 'Content-Type': 'application/json',
             },
         })
-     
+       
         if (res.status === 200) {
             const result = await res.json();
             setDataPlace(result.data);

@@ -55,8 +55,6 @@ export default function Home(props) {
     }
   }
   const fetchData1 = async () => {
-    console.log("thang ",month);
-    console.log("Namw ",year);
     const res = await fetch(URL + `api/all-bill/bill/${apartId}/${month}/${year}`, {
       method: 'GET',
       headers: {
@@ -64,7 +62,6 @@ export default function Home(props) {
         'Content-Type': 'application/json',
       },
     })
-    console.log("tonrg ",res.status);
     if (res.status === 200) {
       const result = await res.json();
 
@@ -84,9 +81,7 @@ export default function Home(props) {
         else {
           setIsPay("Chưa thanh toán")
         }
-        var today = new Date();
-        let date = CalDate(today);
-        if (parseInt(date.dd) >= ruleDate && (!result.data.is_pay))
+        if ((!result.data.is_pay))
           return setbtnComplain(true);
         return setbtnComplain(false);
 
@@ -116,9 +111,6 @@ export default function Home(props) {
       setCountMessRepair(0);
 
     }
-
-
-
   }
   const getcountMessParking = async (_userId, _token) => {
 
@@ -139,8 +131,6 @@ export default function Home(props) {
       else {
         setStatusMessParking(true);
       }
-
-
     }
     else {
       setCountMessParking(0);
@@ -204,7 +194,8 @@ export default function Home(props) {
   useEffect(() => {
     getcountMessParking(userId, token);
     getcountMessRepair(apartId, token);
-    getcountFestival(userId, token)
+    getcountFestival(userId, token);
+    fetchData1();
     const unsubscribe = props.navigation.addListener('focus', () => {
       getData();
     });

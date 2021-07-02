@@ -4,7 +4,7 @@
 
 import {AppRegistry} from 'react-native';
 import App from './App';
-import test from './src/components/Services/Post/AllPost/AllPost'
+import test from './src/components/SignIn/ForgetPass'
 import {name as appName} from './app.json';
 
 AppRegistry.registerComponent(appName, () => App);

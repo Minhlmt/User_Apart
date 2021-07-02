@@ -92,10 +92,12 @@ export default function ChangeInfo(props) {
                     label={'Mật khẩu cũ'}
                     iconClass={FontAwesomeIcon}
                     iconName={'unlock'}
-                    iconColor={'#f95a25'}
+                    iconColor={'white'}
                     iconSize={20}
                     iconWidth={40}
                     inputPadding={16}
+                    labelStyle={{color:'white'}}
+                    inputStyle={{color:'white'}}
                     style={{ backgroundColor: 'rgba(0,0,0,0.35)', borderRadius: 10 }}
                     onChangeText={(text) => setOldPass(text)}
                     secureTextEntry={true}
@@ -109,10 +111,12 @@ export default function ChangeInfo(props) {
                     label={'Mật khẩu mới'}
                     iconClass={FontAwesomeIcon}
                     iconName={'unlock-alt'}
-                    iconColor={'#f95a25'}
+                    iconColor={'white'}
                     iconSize={20}
                     iconWidth={40}
                     inputPadding={16}
+                    labelStyle={{color:'white'}}
+                    inputStyle={{color:'white'}}
                     style={{ backgroundColor: 'rgba(0,0,0,0.35)', borderRadius: 10 }}
                     onChangeText={(text) => setNewPass(text)}
                     secureTextEntry={true}
@@ -127,10 +131,12 @@ export default function ChangeInfo(props) {
                     label={'Nhập lại mật khẩu mới'}
                     iconClass={FontAwesomeIcon}
                     iconName={'lock'}
-                    iconColor={'#f95a25'}
+                    iconColor={'white'}
                     iconSize={20}
                     iconWidth={40}
                     inputPadding={16}
+                    labelStyle={{color:'white'}}
+                    inputStyle={{color:'white'}}
                     style={{ backgroundColor: 'rgba(0,0,0,0.35)', borderRadius: 10 }}
                     onChangeText={(text) => setConfirm(text)}
                     secureTextEntry={true}

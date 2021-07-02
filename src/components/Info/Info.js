@@ -544,9 +544,8 @@ const styles = StyleSheet.create({
         fontSize: Text_Size.Text,
         color: 'rgba(0, 0, 0, 0.7)',
         marginTop: 5,
-        flexWrap: 'wrap'
-
-
+        flexWrap: 'wrap',
+        marginRight:10
     },
     _title: {
         display: 'flex',
