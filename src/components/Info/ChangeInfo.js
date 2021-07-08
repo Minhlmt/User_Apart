@@ -9,12 +9,14 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { Fumi } from 'react-native-textinput-effects';
 import { ImageBackground } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'
+
 const { width: WIDTH } = Dimensions.get('window')
 export default function ChangeInfo(props) {
   const { name, user_id, email, phone, identify_card, native_place, token } = props.route.params;
   const [newEmail, setNewEmail] = useState(email);
   const [newPhone, setNewPhone] = useState(phone);
   const [spinner, setSpinner] = useState(false);
+  const [newName,setNewName]=useState(name);
   const getData = async () => {
     try {
       const infoUser = await AsyncStorage.getItem('infoUser');
@@ -24,6 +26,12 @@ export default function ChangeInfo(props) {
       // error reading value
     }
   }
+  const validate = (email) => {
+    const expression = /(?!.*\.{2})^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([\t]*\r\n)?[\t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([\t]*\r\n)?[\t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
+
+    return expression.test(String(email).toLowerCase())
+}
+
   const sendDataUpdate = async () => {
     const storeData = async (infoUser) => {
       try {
@@ -33,7 +41,10 @@ export default function ChangeInfo(props) {
         // saving error
       }
     }
-
+    console.log("usser Id",user_id);
+    console.log("name ",newName);
+    console.log("phone ",newPhone);
+    console.log("mail ",newEmail);
     const res = await fetch(URL + `api/auth/update-info`, {
       method: 'PUT',
       headers: {
@@ -41,10 +52,10 @@ export default function ChangeInfo(props) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        user_id, name,
+        user_id,
+        name:newName,
         phone: newPhone,
         email: newEmail,
-        
       })
 
     })
@@ -69,11 +80,21 @@ export default function ChangeInfo(props) {
       );
 
     }
+    else{
+      Alert.alert("Thông báo", "Email hoặc sdt không đúng")
+    }
 
   }
   const handleUpdateInfo = () => {
-    setSpinner(true);
-    sendDataUpdate();
+   
+    if(validate(newEmail)){
+      setSpinner(true); 
+      sendDataUpdate();
+    }
+    else{
+      Alert.alert("Thông báo","Email không hợp lệ")
+    }
+   
 
   }
   return (
@@ -83,6 +104,21 @@ export default function ChangeInfo(props) {
         textContent={'Loading...'}
         textStyle={styles.spinnerTextStyle}
       />
+       <View>
+        <Text style={styles.text}>Họ tên</Text>
+      </View>
+      <View style={styles.inputContainer}>
+        <Icon name={'mail-outline'} size={28} color={'rgba(255,255,255,0.7)'}
+          style={styles.inputIcon} />
+        <TextInput
+          style={styles.input}
+          placeholderTextColor={'rgba(255,255,255,0.7)'}
+          underlineColorAndroid='transparent'
+          defaultValue={name}
+          onChangeText={(text)=>setNewName(text)}
+
+        />
+      </View>
       <View>
         <Text style={styles.text}>Email</Text>
       </View>

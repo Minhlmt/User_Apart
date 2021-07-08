@@ -58,6 +58,8 @@ export default function WaterBill({route}) {
         setSpinner(false);
         if (res.status === 200) {
             const result = await res.json();
+
+            console.log("nuoc ",result);
             if(result.data!==null){
                 setOldIndex(result.data.old_index);
                 setNewIndex(result.data.new_index);
@@ -72,6 +74,7 @@ export default function WaterBill({route}) {
                 setNewIndex(0);
                 setUnitPrice(0);
                 setSumIndex(0);
+                setSumPrice(0);
             }
           
 

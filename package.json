@@ -32,6 +32,7 @@
     "react-native-loading-spinner-overlay": "^2.0.0",
     "react-native-month-year-picker": "^1.6.4",
     "react-native-paper": "^4.7.2",
+    "react-native-password-strength-meter": "0.0.5",
     "react-native-popup-menu": "^0.15.10",
     "react-native-reanimated": "^1.13.2",
     "react-native-render-html": "^5.1.0",
